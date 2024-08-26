@@ -1,0 +1,52 @@
+1. Khởi tạo và quản lý dự án
+laravel new project-name: Tạo một dự án Laravel mới.
+composer create-project --prefer-dist laravel/laravel project-name: Tạo một dự án Laravel mới thông qua Composer.
+
+2. Serve Application
+php artisan serve: Chạy server phát triển nội bộ của Laravel tại http://localhost:8000.
+
+3. Migration
+php artisan make:migration create_table_name: Tạo một migration mới.
+php artisan migrate: Chạy tất cả các migration chưa thực hiện.
+php artisan migrate:rollback: Rollback (hủy) lần migrate gần nhất.
+php artisan migrate:reset: Rollback tất cả các migration.
+php artisan migrate:refresh: Rollback tất cả các migration và thực hiện lại.
+
+4. Model
+php artisan make:model ModelName: Tạo một model mới.
+php artisan make:model ModelName -m: Tạo một model mới kèm theo migration.
+
+5. Controller
+php artisan make:controller ControllerName: Tạo một controller mới.
+php artisan make:controller ControllerName --resource: Tạo một resource controller với các phương thức mặc định.
+
+6. Seeder
+php artisan make:seeder SeederName: Tạo một seeder mới.
+php artisan db:seed: Chạy tất cả các seeder.
+php artisan db:seed --class=SeederName: Chạy một seeder cụ thể.
+
+7. Artisan Commands
+php artisan list: Liệt kê tất cả các lệnh Artisan có sẵn.
+php artisan help command-name: Hiển thị trợ giúp chi tiết cho một lệnh cụ thể.
+
+8. Configuration Cache
+php artisan config:cache: Tạo cache cho các file cấu hình.
+php artisan config:clear: Xóa cache của các file cấu hình.
+
+9. Routes
+php artisan route:list: Liệt kê tất cả các route hiện có trong ứng dụng.
+
+10. Tinker
+php artisan tinker: Khởi chạy REPL (Read-Eval-Print Loop) để thử nghiệm các đoạn mã trong ứng dụng.
+
+11. Queue
+php artisan queue:work: Xử lý các công việc trong queue.
+php artisan queue:retry all: Thử lại tất cả các công việc bị fail trong queue.
+
+12. Cache
+php artisan cache:clear: Xóa cache của ứng dụng.
+php artisan view:clear: Xóa cache của view.
+
+13. Event
+php artisan make:event EventName: Tạo một event mới.
+php artisan make:listener ListenerName: Tạo một listener mới cho event.
