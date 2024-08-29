@@ -1,34 +1,18 @@
-
+import { useState } from 'react';
 import '../CSS/App.css';
+import changePages from '../controller/handles.js';
+import Header from './Header.js';
+import Pages from './pages.js';
 
 function App() {
+  const [contents, setContents] = useState(<Pages />);
+
   return (
     <div className="app">
-      <h1>Hello World!!!</h1>
+      <Header onChangePage={ (site)=> changePages(site, setContents)} />
+      {contents}
     </div>
   );
-}
-
-// false
-// const Home = {
-//     menu(){
-//       return(
-//         <h1>This is Menu</h1>
-//       );
-//     },
-//     home(){
-//       return(
-//         <h1>Hello This is Home</h1>
-//       );
-//     }
-// }
-
-function Home(){
-  return(
-      <div>Home</div>
-  );  
-}
+} 
 
 export default App;
-
-export {Home};
