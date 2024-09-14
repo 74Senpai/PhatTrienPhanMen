@@ -50,3 +50,6 @@ php artisan view:clear: Xóa cache của view.
 13. Event
 php artisan make:event EventName: Tạo một event mới.
 php artisan make:listener ListenerName: Tạo một listener mới cho event.
+
+Xampp in Linux 
+sudo /opt/lampp/manager-linux-x64.run

@@ -13,7 +13,7 @@ function Tags({title, content, index}){
         </div>
     </>);  
 }
-function Pages(){
+function InformationTechnology(){
     return (<>
         <div className="type-box">
             <div className="type-title"></div>
@@ -25,4 +25,4 @@ function Pages(){
     </>);
 }
 
-export default Pages;
+export default InformationTechnology;

@@ -35,6 +35,29 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('author', function (Blueprint $table) {
+            $table->string('id_author')->primary();
+            $table->string('name_author', 255);
+            $table->string('author_adress',255);
+            $table->string('phone_number', 10);
+            $table->string('email_adress')->unique();
+            $table->string('password');
+        });
+
+        Schema::create('blogs', function (Blueprint $table) {
+            $table->string('id_blog')->primary();
+            $table->string('name_blog', 255);
+            $table->string('id_author');
+            $table->text('content_blog');
+        });
+
+        Schema::create('comments', function (Blueprint $table){
+            $table->string('id_comment')->primary();
+            $table->string('user_id');
+            $table->string('id_blog');
+            $table->text('content_comment');
+        });
     }
 
     /**
@@ -45,5 +68,8 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('author');
+        Schema::dropIfExists('blogs');
+        Schema::dropIfExists('comments');
     }
 };
