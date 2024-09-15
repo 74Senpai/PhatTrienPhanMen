@@ -26,13 +26,13 @@
             - Khóa ngoại : id_role , id_user
     
     Thực thể 3 : Bài viết (Blog)
-        - Thuộc tính dự kiến: id_blog, tên blog, danh mục, nội dung, view, id_author
-            - Trường nhập thủ công: tên blog, danh mục, nội dung
+        - Thuộc tính dự kiến: id_blog, tên blog, nội dung, view, id_author
+            - Trường nhập thủ công: tên blog, nội dung
             - Khóa chính : id_blog
             - Khóa ngoại : id_author
         
     Thực thể 4 : Bình luận (Comments)
-        - Thuộc tính dự kiến : id_comment, nội dung comment, ngày comments, id_blog, id_user
+        - Thuộc tính dự kiến : id_comment, nội dung comment, ngày comments, id_blog, id_user, id_parent_comment
             - Trường nhập thủ công: nội dung comments
             - Khóa chính : id_comment
             - Khóa ngoại : id_blog, id_user, id_parent_comment
@@ -40,4 +40,14 @@
     Thực thể 5 : Quyền hạn (Role)
         - Thuộc tính dự kiến : id_role, Tên Role, mô tả chức năng
             - Trường nhập thủ công : Tên Role, mô tả chức năng
-            - Khóa chính, id_role
+            - Khóa chính : id_role
+    
+    Thực thể 6 : Thể loại (Type Blog)
+        - Thuộc tính dự kiến : id_type, Tên thể loại, mô tả, tổng bài viết
+        - Trường nhập thủ công : Tên thể loại, mô tả
+        - Khóa chính : id_type
+    
+    Thực thể 7 : Danh sách Blog theo thể loại (List_Blog_By_Type)
+        - Thuộc tính dự kiến : id_blog, id_type
+        - Khóa chính : id_blog, id_type
+        - Khóa ngoại : id_blog, id_type
