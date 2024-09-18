@@ -15,3 +15,5 @@ Route::get('/all-user', [UserController::class, 'getUsers']);
 Route::get('/all-author', [UserController::class, 'getAuthors']);
 
 Route::get('/author/id={id}', [UserController::class, 'getAuthorByID']);
+
+Route::post('/sign-up', [VerifyRegister::class, 'register']);

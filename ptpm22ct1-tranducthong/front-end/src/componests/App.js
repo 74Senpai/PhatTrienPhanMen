@@ -3,16 +3,16 @@ import '../CSS/App.css';
 import changePages from '../controller/handles.js';
 import Header from './Header.js';
 import Pages from './pages.js';
+import SignUp from './Login.js';
 
 function App() {
   const [contents, setContents] = useState(<Pages />);
 
-  return (
+  return (<>
     <div className="app">
-      <Header onChangePage={ (site)=> changePages(site, setContents)} />
-      {contents}
+      <SignUp />
     </div>
-  );
+  </>);
 } 
 
 export default App;
