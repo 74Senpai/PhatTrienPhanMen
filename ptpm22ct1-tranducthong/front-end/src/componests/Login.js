@@ -28,7 +28,9 @@ function SignUp() {
 
             if (!response.ok) {
                 // Xử lý lỗi nếu response không thành công
-                throw new Error(data.message || 'Đăng ký thất bại');
+                throw new Error(data.message || 'Đăng ký 7 bại');
+            }else{
+                setErrorMessages('');
             }
 
             // Xử lý response nếu đăng ký thành công
@@ -92,25 +94,79 @@ function SignUp() {
 
 
 function Login(){
-    return(
-    <form method='POST' action='http://127.0.0.1:8000/login'>
-        <div className="box-input">
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" placeholder="Your Email" required />
-            <div className="errorMessages email"></div>
-        </div>
-        <div className="box-input">
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" placeholder="Password" required />
-            <div className="errorMessages password"></div>
-        </div>    
-        <div className="box-input submit-btn">
-            <button id='signUp-btn' type="submit">Login</button>
-            <div className="errorMessages form guide-text">
-                Điền đầy đủ, chính xác thông tin trước khi đăng nhập
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessages, setErrorMessages] = useState('');
+
+    const handleLogin = async (e) => {
+        e.preventDefault(); 
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Xử lý lỗi nếu response không thành công
+                throw new Error(data.message || 'Đăng nhập thất bại');
+            }else{
+                setErrorMessages('');
+            }
+
+            // Xử lý response nếu đăng ký thành công
+            console.log('Sign Up successful:', data);
+
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            setErrorMessages(error.message);
+            console.error('Error signing up:', error.message);
+        }
+    };
+
+    return (
+        <form onSubmit={handleLogin}>
+            <div className="box-input">
+                <label htmlFor="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Your Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+                <div className="errorMessages email"></div>
             </div>
-        </div>    
-    </form>
+            <div className="box-input">
+                <label htmlFor="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <div className="errorMessages password"></div>
+            </div>
+            <div className="box-input submit-btn">
+                <button id='signUp-btn' type="submit">Login</button>
+                <div className="errorMessages form guide-text">
+                   Nhập chính xác thông tin tài khoản trước khi đăng nhập
+                </div>
+            </div>
+            {errorMessages && <div className="errorMessages">{errorMessages}</div>}
+        </form>
     );
 }
 
