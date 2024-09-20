@@ -2,6 +2,8 @@ import '../CSS/Login.css';
 import changePages from '../controller/handles.js';
 import { useState } from 'react';
 
+
+
 function SignUp() {
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
@@ -170,27 +172,32 @@ function Login(){
     );
 }
 
-function Account() {
+export default function Account({isShow}) {
     const [loginPage, setLoginPage] = useState(<Login />);
+     
     return (
-<>
-<div id='form-signUp'>
-    <div className='logo-blog'>LOGO</div>
-    <div className='nav-Login'>
-        <div className="login-tab" onClick={()=>changePages('login', setLoginPage)}>Login</div>
-        <div className="signUp-tab" onClick={()=>changePages('signup', setLoginPage)}>Sign Up</div>
-    </div>
-    <div className='guide-text'>
-        Hoàn tất các bước để đăng ký tài khoản và 
-        có những tại ngiệm tốt nhất
-    </div>
-    {loginPage}
-</div>  
-</>
-    );
+        <>
+        <div id='fiter-bg' onClick={()=>{isShow(false)}}> </div>
+            <div id='form-signUp'>
+                <div className='cancle-btn' onClick={()=>{isShow(false)}}>
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+                <div className='logo-blog'>LOGO</div>
+                <div className='nav-Login'>
+                    <div className="login-tab" onClick={()=>changePages('login-form', setLoginPage)}>Login</div>
+                    <div className="signUp-tab" onClick={()=>changePages('signup', setLoginPage)}>Sign Up</div>
+                </div>
+                <div className='guide-text'>
+                    Hoàn tất các bước để đăng ký tài khoản và 
+                    có những tại ngiệm tốt nhất
+                </div>
+                {loginPage}
+            </div>  
+       
+        </>);
 }
 
 export {Login};
 export {SignUp};
-export default  Account;
+
 

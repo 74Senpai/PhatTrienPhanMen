@@ -1,12 +1,13 @@
 import { SignUp } from '../componests/Login.js';
 import { Login } from '../componests/Login.js';
 import InformationTechnology from '../componests/pages.js';
+import Home from '../componests/Home.js';
 
 
 function changePages(site, setContents) {
     switch (site) {
-      case "Home":
-        // setContents(<Home />);
+      case "home":
+        setContents(<Home />);
         break;
       case "Hello":
         // setContents(<Hello />);
@@ -17,12 +18,14 @@ function changePages(site, setContents) {
       case "signup":
         setContents(<SignUp />);
         break;
-      case "login":
+      case "login-form":
         setContents(<Login />);
         break;
       default:
         setContents("Default");
     }
 }
+
+
 
 export default changePages;

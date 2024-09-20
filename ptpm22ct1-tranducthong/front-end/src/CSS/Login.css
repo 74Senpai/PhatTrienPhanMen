@@ -12,6 +12,7 @@
     flex-grow: 1;
     flex-wrap: wrap;
     box-sizing: content-box;
+    z-index: 100;
 }
 
 .logo-blog{
@@ -87,4 +88,14 @@ form{
 
 .submit-btn > button{
     height: 2rem;
+}
+
+#fiter-bg{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    background-color: rgba(31, 30, 30, 0.403);
+    overflow: hidden;
+    z-index: 10;
 }
