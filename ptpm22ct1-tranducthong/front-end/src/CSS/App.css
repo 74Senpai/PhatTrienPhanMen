@@ -1,8 +1,37 @@
 html{
     font-size: 20px;
+    font-family: sans-serif;
+    
 }
 *{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
+
+#contents{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    
+}
+
+.app{
+    min-height: 100vh;
+    position: relative;
+    top: 0;
+}
+
+.ref-link{
+    background-color: bisque;
+    text-align: left;
+    display: block;
+    width: 100%;
+    height: 2rem;
+    padding: 0.5rem;
+    color: rgb(5, 2, 100);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+

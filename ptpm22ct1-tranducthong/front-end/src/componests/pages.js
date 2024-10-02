@@ -1,28 +1,37 @@
+import { ContentsByType } from "./Home.js";
+// import { useContext } from "react";
+// import { RefContext } from "../Context/PagesContext.js";
+import { RefCreate } from "./Ref.js";
+import { RefBlocks } from "./Ref.js";
 
 
-function Tags({title, content, index}){
+export default function Pages(){
+    // const reflink = useContext(RefContext);
+    const {refBlock, refNext} = RefCreate();
+    refNext({name : "IT"});
+    console.log(refBlock);
+    const refList = [];
+    for(let i in refBlock){
+        refList.push(<RefBlocks name={refBlock[i]} key={i}/>);
+    }
     return(<>
-        <div className="tag-box" data-index={index}>
-            <div className="left-title">{title}</div>
-            <div className="right-title">
-                <div className="img-box">
-                    <img src="#" alt="This is Images"/>
-                </div>
-                <div className="contents">{content}</div>
-            </div>
+        <div className="ref-link">
+            {refList}
         </div>
-    </>);  
-}
-function InformationTechnology(){
-    return (<>
-        <div className="type-box">
-            <div className="type-title"></div>
-            <div className="date-release"></div>
-            <Tags title="Day la ai ti" content="Hello my friend" index="0"/>
-            <Tags title="Day la ai ti 1" content="Hello my friend" index="0"/>
-            <Tags title="Day la ai ti 2" content="Hello my friend" index="0"/>
-        </div>    
+        <div className="contents-pages-ref">
+            <ContentsByType 
+                title_name={"Chuyen IT"}
+                templ={1}
+            />
+        </div>
     </>);
 }
 
-export default InformationTechnology;
+export function BlogPagesContent(){
+    return(
+        <div className="blog-content-page">
+            <div className="nav-left"></div>
+            <div className="content-right"></div>
+        </div>
+    );
+}

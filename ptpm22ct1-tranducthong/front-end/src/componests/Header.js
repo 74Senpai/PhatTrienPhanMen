@@ -1,20 +1,39 @@
 import '../CSS/Header.css';
 import { useState } from 'react';
+import changePages from '../controller/handles.js';
+import { usePopupView } from '../CustomHook/LoginHook.js';
 import Account from './Login.js';
-
 
 function Button({name, onClick}) {
     return (
-      <div className='nav' onClick={() => onClick(name)}>{name}</div>
+      <div className="nav" id={name} onClick={() => onClick(name)}>{name}</div>
     );
   }
   
+function getName(){
+    let user_data; 
+    try{
+      let data = localStorage.getItem("user_data");
+      user_data = JSON.parse(data);
+      
+    }catch(err){
+      return false;
+    }
+  
+    return user_data; 
+}
+
   function Header({ onChangePage }) {
     const [searchContent, setContentsSeach] = useState('');
-    const [showLogin, setShow] = useState(false);
+    // const [popup, viewPopup] = usePopupView();
+    const [isShow, setShow] = useState(false);
+    // viewPopup(<Account />);
+    const data = getName();
+    const userName = data.name;
+
     return (<>
       <header>
-        <div className="title nav" onClick={()=>{onChangePage('home')}}>LOGO</div>
+        <div className="title nav" id="home" onClick={()=>{onChangePage('home')}}><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>
         <Button name="IT" onClick={onChangePage} />
         <Button name="Daily Life" onClick={onChangePage} />
         <Button name="Sports" onClick={onChangePage} />
@@ -30,9 +49,10 @@ function Button({name, onClick}) {
           value={searchContent}/>
           <div id='Search'><i class="fa-solid fa-magnifying-glass"></i></div>
         </div>
-        <Button name="Login" onClick={()=>{setShow(true)}} />
+        <div className="account nav" onClick={()=>{setShow(true)}}>{ data && userName || "Login" }</div>
       </header>
-      {showLogin && <Account isShow={setShow} />}
+      {isShow && <Account isShowForm={setShow} data={data}/>}
+      
   </>);
   }
   

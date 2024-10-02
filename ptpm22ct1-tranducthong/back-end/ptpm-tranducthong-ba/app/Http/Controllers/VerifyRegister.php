@@ -58,6 +58,7 @@ class VerifyRegister extends Controller
         $token = $user->createToken($user->name);
         return response()->json([
             'message' => 'Login success!',
+            'data' => $user,
             'token' => $token->plainTextToken
         ], 201);
     }

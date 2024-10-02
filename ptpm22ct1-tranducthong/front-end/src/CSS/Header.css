@@ -9,6 +9,8 @@ header{
 
 header > div{
     flex-grow: 1;
+    align-items: center;
+   text-align: center; 
 }
 
 header .title{
@@ -47,17 +49,15 @@ header .title{
     color: rgb(131, 179, 247);
 }
 
-.cancle-btn{
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-}
-
-.cancle-btn:hover{
-    color: azure;
-    filter: blur(0.5px);
-}
 
 .title{
     text-align: center;
+}
+
+header .account{
+    width: 5%;
+}
+
+header .active{
+    color: rgb(52, 144, 250);
 }

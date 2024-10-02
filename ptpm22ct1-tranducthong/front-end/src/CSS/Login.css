@@ -1,9 +1,9 @@
 #form-signUp{
     display: flex;
-    position: absolute;
+    position: fixed;
     top: 50vh;
-    left: 50%;
-    background-color: aqua;
+    right: 0px;
+    background-color: rgb(255, 255, 255);
     width: 400px;
     /* height: 500px; */
     transform: translate(-50%, -50%);
@@ -39,14 +39,14 @@
     align-self: center;
     line-height: 2.5rem;
     /* height: 100%; */
+    background-color: rgb(229, 243, 255);
 }
 
-.login-tab{
-    background-color: cadetblue;
+.nav-Login .active{
+    background-color:#001a65;
+    color: white;
 }
-.signUp-tab{
-    background-color: beige;
-}
+
 .guide-text{
     width: 100%;
     /* height: 1rem; */
@@ -93,9 +93,42 @@ form{
 #fiter-bg{
     width: 100%;
     height: 100vh;
-    position: absolute;
+    position: fixed;
     top: 0;
     background-color: rgba(31, 30, 30, 0.403);
     overflow: hidden;
     z-index: 10;
+}
+
+.cancle-btn{
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.cancle-btn:hover{
+    color: rgb(0, 2, 66);
+    filter: blur(0.5px);
+}
+
+.hidden{
+    display: none !important;   
+}
+
+.box-input #cancle,
+.box-input #update{
+    display: inline-block;
+    width: 49% !important; 
+    /* margin-top: 1rem; */
+    /* background-color: rgb(2, 0, 144); */
+}
+
+.box-input #cancle{
+    /* margin-right: 0.25rem; */
+    /* background-color: rgb(226, 39, 39); */
+}
+
+.box-input .air{
+    display: inline-block;
+    width: 2% !important;
 }
