@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -41,25 +42,39 @@ class VerifyRegister extends Controller
         }
     }
 
-    public function login(Request $request){
-        $request->validate([
-            'email' => 'required|string|email|max:255|exists:users',
-            'password' => 'required|string|min:8',
-        ]);
+    public function login(Request $request)
+    {   
+        $credentials = $request->only('email', 'password');
 
-        $user = User::where('email', $request->email)->first();
+        // Tìm người dùng theo email
+        $user = User::where('email', $credentials['email'])->first();
 
-        if(!$user || !Hash::check($request->password, $user->password) ){
+        // Kiểm tra xem người dùng có tồn tại và mật khẩu có khớp không
+        if ($user && Hash::check($credentials['password'], $user->password)) {
+            // Tạo token cho người dùng
+            $token = $user->createToken('access_token')->plainTextToken;
+
             return response()->json([
-                'message' => 'Email or password incorrect!'
-            ], 201);
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'data' => $user,
+            ]);
         }
 
-        $token = $user->createToken($user->name);
-        return response()->json([
-            'message' => 'Login success!',
-            'data' => $user,
-            'token' => $token->plainTextToken
-        ], 201);
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
+
+    public function logout(Request $request)
+    {
+        \Log::info('Logout request received'); // Thêm dòng này
+        $user = $request->user();
+        if ($user) {
+            // Xóa tất cả token của user hiện tại
+            $user->tokens()->delete();
+            return response()->json(['message' => 'Logout success!'], 201);
+        } else {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+    }
+
 }

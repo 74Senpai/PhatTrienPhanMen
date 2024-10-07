@@ -29,7 +29,11 @@ function getName(){
     const [isShow, setShow] = useState(false);
     // viewPopup(<Account />);
     const data = getName();
-    const userName = data.name;
+    let tmp;
+    if(data){
+      tmp = data.name;
+    }
+    const userName = tmp;
 
     return (<>
       <header>
@@ -50,9 +54,8 @@ function getName(){
           <div id='Search'><i class="fa-solid fa-magnifying-glass"></i></div>
         </div>
         <div className="account nav" onClick={()=>{setShow(true)}}>{ data && userName || "Login" }</div>
+          {isShow && <Account isShowForm={setShow} data={data}/>}
       </header>
-      {isShow && <Account isShowForm={setShow} data={data}/>}
-      
   </>);
   }
   

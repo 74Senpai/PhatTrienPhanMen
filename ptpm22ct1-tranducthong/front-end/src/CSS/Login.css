@@ -13,6 +13,7 @@
     flex-wrap: wrap;
     box-sizing: content-box;
     z-index: 100;
+    color: black;
 }
 
 .logo-blog{
@@ -131,4 +132,170 @@ form{
 .box-input .air{
     display: inline-block;
     width: 2% !important;
+}
+
+.account-method{
+    /* color: black; */
+    /* position: absolute;
+    right: 0;
+    top:4rem; */
+    /* width: 20%; */
+    border: 1px solid white;
+    background-color: #001a65;
+    width: 100%;
+}
+
+.account-method > div{
+    border-bottom: 1px solid rgb(255, 255, 255);
+    padding: 1rem 0.25rem;
+}
+
+.account-method > div:last-child{
+    border-bottom: 0;
+}
+
+#form-method{
+    display: flex;
+    position: absolute;
+    /* top: 50vh; */
+    right: 0px;
+    top: 3.75rem;
+    background-color: rgb(255, 255, 255);
+    /* width: 400px; */
+    /* height: 500px; */
+    /* transform: translate(-50%, -50%); */
+    text-align: center;
+    /* padding: 0.5rem; */
+    flex-grow: 1;
+    flex-wrap: wrap;
+    box-sizing: content-box;
+    z-index: 100;
+    color: rgb(255, 255, 255);
+    width: 14rem;
+}
+
+.arow{
+    display: block;
+    background-color: #001a65;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 1px;
+    rotate: 45deg;
+    position: absolute;
+    top: -0.24rem;
+    right: 2.25rem;
+    border: 1px solid white;
+    border-right:0;
+    border-bottom: 0;
+}
+
+#form-edit{
+    background-color: white;
+    z-index: 100;
+    position: absolute;
+    right: 14.25rem;
+    top: 1rem;
+    color: black;
+    /* padding: 0rem 1rem; */
+}
+
+#form-edit .logo-blog{
+    width: 100%;
+    padding: 1rem;
+}
+
+#form-edit .arow{
+    background-color: white;
+    position: absolute;
+    right: -0.23rem;
+    top: 0.75rem;
+}
+
+#form-register-author{
+    position: absolute;
+    background-color: white;
+    top: 4rem;
+    right: 14.25rem;
+    color: black;
+}
+
+#form-register-author .arow{
+    background-color: white;
+    position: absolute;
+    right: -0.23rem;
+    top: 0.75rem;
+}
+
+#form-register-author .logo-blog{
+    width: 100%;
+    padding: 1rem;
+}
+
+#form-delete{
+    color: black;
+    position: absolute;
+    background-color: white;
+    top: 8rem;
+    right: 14.25rem;
+    color: black;
+}
+
+
+.box-checkbox{
+    /* display: inline-block;
+    width: 5px; */
+    display: flex;
+    height: 2rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.box-checkbox > input{
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+}
+
+#form-delete .logo-blog{
+    width: 100%;
+    padding: 1rem;
+}
+
+#form-delete .arow{
+    background-color: white;
+    position: absolute;
+    right: -0.23rem;
+    top: 0.75rem;
+}
+
+#form-logout{
+    color: black;
+    position: absolute;
+    background-color: white;
+    top: 11rem;
+    right: 14.25rem;
+    color: black;
+    width: 25rem;
+    padding: 1rem 0;
+}
+
+#form-logout .arow{
+    background-color: white;
+    position: absolute;
+    right: -0.23rem;
+    top: 0.75rem;
+}
+
+#form-logout .submit-btn{
+    display: flex;
+    flex-direction: row;
+}
+
+#form-logout #submit-btn{
+    margin-left: 1rem;
+}
+
+.account-method > div:hover{
+    cursor: pointer;
 }
