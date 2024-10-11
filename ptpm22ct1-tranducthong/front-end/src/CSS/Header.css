@@ -52,6 +52,13 @@ header .title{
 
 .title{
     text-align: center;
+    padding: 1rem;
+    width: 20%;
+    overflow: hidden;
+}
+
+.title > img{
+    width: 100%;
 }
 
 header .account{

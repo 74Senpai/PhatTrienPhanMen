@@ -5,7 +5,7 @@ import Header from './Header.js';
 import Home from './Home.js';
 import Footer from './Footer.js';
 import { useContentsHook } from '../CustomHook/Contents.js';
-import { PopupProvider } from '../Context/PagesContext.js';
+import Loading from './Loading/Loading.js';
 
 
 function App() {
@@ -18,8 +18,8 @@ function App() {
         {contents} 
       </div>
       <Footer />
-    </div>
-    
+    </div>  
+    <Loading isShow={false} mess={"Hom nay troi dep vl"} type={"error"}/>  
   </>);
 } 
 

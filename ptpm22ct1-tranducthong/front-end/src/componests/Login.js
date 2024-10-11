@@ -2,7 +2,7 @@ import '../CSS/Login.css';
 import { useState } from 'react';
 import { todoAction } from '../controller/handles.js';
 import { Infor, AuthorRegister, Login, SignUp, DeleteAccount, Logout } from './Login_Sigup_Account/Form.js';
-
+import Loading from './Loading/Loading.js';
 
 function Method({data , setCurrent}){
  
@@ -32,6 +32,7 @@ export default function Account({isShowForm, data}) {
     const [tab, setTab] = useState("Login");
     const beforNav = todoAction.mainSite;
     const [current, setCurrent] = useState('');
+    const [loading, setLoading] = useState(false);
 
     console.log("Befor nav", beforNav);
     console.log("Pros",data);
@@ -73,7 +74,7 @@ export default function Account({isShowForm, data}) {
                 {current == "form-logout" &&
                     <div id='form-logout'>
                         <span className="arow"></span>
-                        <Logout setCurrent={setCurrent} />
+                        <Logout setCurrent={setCurrent} isShowForm={isShowForm}/>
                     </div>
                 }
                 
@@ -98,10 +99,9 @@ export default function Account({isShowForm, data}) {
                     Hoàn tất các bước để đăng ký tài khoản và 
                     có những tại ngiệm tốt nhất
                 </div>
-                <Login isShowForm={isShowForm} tab={tab} />
-                <SignUp isShowForm={isShowForm} tab={tab} />
-            </div>  
-    
+                <Login isShowForm={isShowForm} tab={tab} load={setLoading}/>
+                <SignUp isShowForm={isShowForm} tab={tab} load={setLoading}/>
+            </div>         
         </>);
 }
 

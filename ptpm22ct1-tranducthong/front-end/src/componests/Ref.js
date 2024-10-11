@@ -1,4 +1,5 @@
 import { useState } from "react";
+import changePages from "../controller/handles";
 
 export function RefCreate(){
     const [refBlock, setRefBlock] = useState(["Home"]);
@@ -11,8 +12,8 @@ export function RefCreate(){
     return {refBlock, refNext};
 }
 
-export function RefBlocks({name}){
+export function RefBlocks({name, extend}){
     return(
-        <div>{name}</div>
+        <div className="ref-name">{name + " " +extend}</div>
     );
 }

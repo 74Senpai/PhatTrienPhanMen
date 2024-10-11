@@ -12,7 +12,7 @@ export default function Pages(){
     console.log(refBlock);
     const refList = [];
     for(let i in refBlock){
-        refList.push(<RefBlocks name={refBlock[i]} key={i}/>);
+        refList.push(<RefBlocks name={refBlock[i]} extend={">"} key={i}/>);
     }
     return(<>
         <div className="ref-link">

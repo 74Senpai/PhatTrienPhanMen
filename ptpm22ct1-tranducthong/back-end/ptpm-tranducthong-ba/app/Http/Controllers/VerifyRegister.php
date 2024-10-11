@@ -33,8 +33,9 @@ class VerifyRegister extends Controller
 
         
             return response()->json([
-                'user' => new UserResource($user),
-                'token' => $token->plainTextToken
+                'data' => new UserResource($user),
+                'token' => $token->plainTextToken,
+                'token_type' => 'Bearer',
             ], 201);
 
         } catch (\Exception $e) {
@@ -49,19 +50,23 @@ class VerifyRegister extends Controller
         // Tìm người dùng theo email
         $user = User::where('email', $credentials['email'])->first();
 
+        if(!$user){
+            return response()->json(['message' => 'Email không tồn tại'], 401);
+        }
         // Kiểm tra xem người dùng có tồn tại và mật khẩu có khớp không
-        if ($user && Hash::check($credentials['password'], $user->password)) {
+        if (Hash::check($credentials['password'], $user->password)) {
             // Tạo token cho người dùng
-            $token = $user->createToken('access_token')->plainTextToken;
+            $token = $user->createToken($user->name)->plainTextToken;
 
             return response()->json([
                 'token' => $token,
                 'token_type' => 'Bearer',
                 'data' => $user,
             ]);
+        }else{
+            return response()->json(['message' => 'Sai mật khẩu'], 401);
         }
-
-        return response()->json(['message' => 'Unauthorized'], 401);
+        
     }
 
     public function logout(Request $request)

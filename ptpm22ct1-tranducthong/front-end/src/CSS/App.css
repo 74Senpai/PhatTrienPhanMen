@@ -35,3 +35,14 @@ html{
     font-weight: 600;
 }
 
+.ref-name{
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+.ref-name:hover{
+    /* font-style: inherit; */
+    cursor: pointer;
+    text-decoration: underline;
+}
+

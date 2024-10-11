@@ -273,7 +273,7 @@ export function Login({isShowForm, tab}){
 
             if (!response.ok) {
                 // Xử lý lỗi nếu response không thành công
-                throw new Error("Server Error" || 'Đăng nhập thất bại');
+                throw new Error(data.message || 'Đăng nhập thất bại');
             }else{
                 setErrorMessages('');
             }
@@ -289,7 +289,7 @@ export function Login({isShowForm, tab}){
             todoAction.setActive(todoAction.mainSite);
         } catch (error) {
             // Xử lý lỗi nếu có
-            setErrorMessages("Server Error");
+            setErrorMessages(error.message);
             console.error('Error signing up:', error.message);
         }
     };
@@ -384,7 +384,7 @@ export function DeleteAccount(){
     </>);
 }
 
-export function Logout({ setCurrent }) {
+export function Logout({isShowForm, setCurrent }) {
     const [errorMessages, setErrorMessages] = useState('');
 
     const handleDelete = async (e) => {
@@ -408,6 +408,7 @@ export function Logout({ setCurrent }) {
                 localStorage.removeItem('user_data');
                 setCurrent(""); // Đặt lại trạng thái đăng nhập trong ứng dụng
                 console.log("Logged out successfully");
+                isShowForm(false);
             } else {
                 const data = await response.json();
                 setErrorMessages(data.message || "Logout failed");
