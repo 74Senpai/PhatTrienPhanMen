@@ -15,47 +15,66 @@ function localSave(name, data){
     return true;
 }
 
-export function Infor({data}){
-    const [email, setEmail] = useState('');
-    const [userName, setUserName] = useState('');
+export function Infor({data, isShowForm, setCurrent}){
+    const [email, setEmail] = useState(data.email);
+    const [userName, setUserName] = useState(data.name);
     const [errorMessages, setErrorMessages] = useState('');
+    const [isChangeData, setChangeData] = useState(false);
+    const [editMode, setEditMode] = useState(false);
     // e.preventDefault();
+    useEffect(()=>{
+        console.log('data in effect', data);
+        if(data.name !== userName || data.email !== email){
+            setChangeData(true);
+        }else{
+            setChangeData(false);
+            // console.log("data default", isChangeData);
+        }
+    }, [userName,email, editMode]);
+
     const handleEdit = async(e)=>{
+        const token = localStorage.getItem('access_token');
         e.preventDefault();
+           
         try{
-            const response = await fetch('http://127.0.0.1:8000/api/update', {
+            const response = await fetch('http://127.0.0.1:8000/api/update/account', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     email: email,
                     userName : userName,
-                    token : localStorage.getItem('access_token')
                 }),
             });
+            const data = await response.json();
+
+            if (response.ok) {
+                setCurrent(""); // Đặt lại trạng thái đăng nhập trong ứng dụng
+                console.log("Update out successfully");
+                isShowForm(false);
+                localSave('user_data', data.data);
+                console.log('update user',data);
+            } else {
+                const data = await response.json();
+                setErrorMessages(data.message || "Update Fail");
+            }
+
         }catch(error){
             setErrorMessages(error.message);
             console.error('Error signing up:', error.message);
         }
     }
 
-    const editMode = (isOn)=>{
-        if(isOn){
-            document.getElementById('userName').disabled = false;
-            document.getElementById('email').disabled = false;
-            document.getElementById('update').classList.remove('hidden');
-            document.getElementById('cancle').classList.remove('hidden');
-            document.getElementById('edit').classList.add('hidden');
-        }else{
-            document.getElementById('userName').disabled = true;
-            document.getElementById('email').disabled = true;
-            document.getElementById('update').classList.add('hidden');
-            document.getElementById('cancle').classList.add('hidden');
-            document.getElementById('edit').classList.remove('hidden');
-            setEmail('');
-            setUserName('');
-        }
+    
+    const editModeAction = (isOn)=>{
+        setEditMode(isOn);
+        if(!isOn){
+            setEmail(data.email);
+            setUserName(data.name);
+        }    
     }
 
     return(<>
@@ -66,9 +85,10 @@ export function Infor({data}){
                 <input
                     type="textbox"
                     id="userName"
-                    value={ userName || data.name}
-                    onChange={ (e)=>setUserName(e.target.value)}
-                    disabled
+                    value={userName}
+                    onChange={ (e)=>{setUserName(e.target.value);}}
+                    disabled={!editMode}
+                    required
                 />
             </div>
             <div className="box-input">
@@ -76,16 +96,19 @@ export function Infor({data}){
                 <input
                     type="email"
                     id="email"
-                    value={email || data.email}
+                    value={email}
                     onChange={ (e)=>setEmail(e.target.value)}
-                    disabled
+                    disabled={!editMode}
+                    required
                 />
             </div>
             <div className="box-input submit-btn edit-btn">
-                <button id='edit' type="button" onClick={()=>editMode(true)}>Edit</button>
-                <button id='cancle' className='hidden' type='button' onClick={()=>editMode(false)} >Cancle</button>
-                <span className='air'></span>
-                <button id='update' className='hidden' type='submit' onClick={handleEdit} >Update</button>
+                {editMode || <button id='edit' type="button" onClick={()=>editModeAction(true)}>Edit</button>}
+                {editMode && <>
+                    <button id='cancle'  type='button' onClick={()=>editModeAction(false)} >Cancle</button>
+                    <span className='air'></span>
+                    <input id='update'  type='submit' onClick={handleEdit} disabled={!isChangeData} value="Update" />
+                </>}
                 <div className="errorMessages form guide-text">
                    Nhập chính xác thông tin cần chỉnh sửa 
                 </div>
@@ -96,22 +119,60 @@ export function Infor({data}){
     </>);
 }
 
-export function AuthorRegister(){
+export function AuthorRegister({isShowForm, setCurrent}){
     const [phoneNumber, setPhoneNumber] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [errorMessages, setErrorMessages] = useState('');
 
+    const handleSignUpAuthor = async(e)=>{
+        e.preventDefault();
+        
+        const token = localStorage.getItem('access_token');
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/author/register', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name_author : authorName,
+                    phone : phoneNumber,
+                })
+                // credentials: 'include' // Đảm bảo gửi cookie nếu bạn dùng Sanctum với cookie
+            });
+            // response.json();
+            const data = await response.json();
+            if(!response.ok){
+                setErrorMessages(data.message || "Register failed");
+            }else{
+                setErrorMessages("");
+                setCurrent(""); 
+                // console.log("Logged out successfully");
+                isShowForm(false);
+            }
+
+        }catch(error){
+            setErrorMessages(error.message);
+            console.error('Error logging out:', error.message);
+        }
+        
+    }
+
     return (<>
-        <form>
+        <form onSubmit={handleSignUpAuthor}>
             <div>
                 <div className="box-input">
                     <label htmlFor="authorName">Author Name</label>
                     <input
                         type="textbox"
                         id="authorName"
-                        value={ authorName}
+                        value={authorName}
                         onChange={ (e)=>setAuthorName(e.target.value)}
                         placeholder='Name you want User see'
+                        required
                     />
                 </div>
                 <div className="box-input">
@@ -122,6 +183,7 @@ export function AuthorRegister(){
                         value={phoneNumber}
                         onChange={ (e)=>setPhoneNumber(e.target.value)}
                         placeholder='phone number'
+                        required
                     />
                 </div>
                 <div className="box-input submit-btn edit-btn">
@@ -336,11 +398,44 @@ export function Login({isShowForm, tab}){
 }
 
 
-export function DeleteAccount(){
+export function DeleteAccount({isShowForm, setCurrent}){
     const [errorMessages, setErrorMessages] = useState('');
 
+    const handleDelete = async(e)=>{
+        e.preventDefault(); 
+        
+        const token = localStorage.getItem('access_token');
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/delete/account', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Xử lý lỗi nếu response không thành công
+                throw new Error(data.message || 'Đăng nhập thất bại');
+            }else{
+                setErrorMessages('');
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('user_data');
+                setCurrent("");
+                isShowForm(false);
+            }
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            setErrorMessages(error.message);
+            console.error('Error signing up:', error.message);
+        }
+    }
+
     return(<>
-    <form>
+    <form method='POST' onSubmit={handleDelete}>
         <div>
             <label>Why do you want to delete your account?</label>
             <div className="box-checkbox">

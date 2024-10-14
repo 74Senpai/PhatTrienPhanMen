@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Home from "../componests/Home.js";
+import Home from "../componests/BASE/Home.js";
 
 export function useContentsHook(){
     const [contents, setContents] = useState(<Home />);

@@ -209,6 +209,7 @@ form{
     position: absolute;
     right: -0.23rem;
     top: 0.75rem;
+    z-index: 5;
 }
 
 #form-register-author{
@@ -224,6 +225,7 @@ form{
     position: absolute;
     right: -0.23rem;
     top: 0.75rem;
+    z-index: 5;
 }
 
 #form-register-author .logo-blog{
@@ -267,6 +269,7 @@ form{
     position: absolute;
     right: -0.23rem;
     top: 0.75rem;
+    z-index: 5;
 }
 
 #form-logout{
@@ -285,6 +288,7 @@ form{
     position: absolute;
     right: -0.23rem;
     top: 0.75rem;
+    z-index: 10;
 }
 
 #form-logout .submit-btn{
@@ -296,6 +300,9 @@ form{
     margin-left: 1rem;
 }
 
+.account-method{
+    z-index: 50;
+}
 .account-method > div:hover{
     cursor: pointer;
 }

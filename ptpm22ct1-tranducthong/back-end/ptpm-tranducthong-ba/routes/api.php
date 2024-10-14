@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,8 +17,16 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('author/id={id}', [UserController::class, 'getAuthorByID']);
 
-Route::post('sign-up', [VerifyRegister::class, 'register']);
+Route::controller(UserController::class)->group(function(){
+    Route::middleware(['auth:sanctum'])->group( function(){
+        Route::post('delete/account', 'DeleteUser');
+        Route::post('update/account', 'UpdateUser');
+        Route::post('author/register', 'AuthorRegister');
+    }); 
+});
 
-Route::post('login', [VerifyRegister::class, 'login']);
-
-Route::post('logout', [VerifyRegister::class, 'logout'])->middleware('auth:sanctum');
+Route::controller(VerifyRegister::class)->group(function () {
+    Route::post('sign-up','register');
+    Route::post('login',  'login');
+    Route::post('logout', 'logout')->middleware('auth:sanctum');
+});

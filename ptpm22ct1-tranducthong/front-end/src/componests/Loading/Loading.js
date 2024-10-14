@@ -1,4 +1,4 @@
-import '../../CSS/Loading.css';
+import './CSS/Loading.css';
 import { useState } from "react";
 
 function Messages({typeBox, message}){

@@ -1,8 +1,8 @@
-import '../CSS/Login.css';
+import './CSS/Login.css';
 import { useState } from 'react';
-import { todoAction } from '../controller/handles.js';
-import { Infor, AuthorRegister, Login, SignUp, DeleteAccount, Logout } from './Login_Sigup_Account/Form.js';
-import Loading from './Loading/Loading.js';
+import { todoAction } from '../../controller/handles.js';
+import { Infor, AuthorRegister, Login, SignUp, DeleteAccount, Logout } from './Form.js';
+
 
 function Method({data , setCurrent}){
  
@@ -48,7 +48,7 @@ export default function Account({isShowForm, data}) {
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>        
-                        <Infor data={data} />
+                        <Infor data={data} isShowForm={isShowForm} setCurrent={setCurrent} />
                     </div>
                  }
                 {current == "form-register-author" &&
@@ -58,7 +58,7 @@ export default function Account({isShowForm, data}) {
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>        
-                        <AuthorRegister />
+                        <AuthorRegister isShowForm={isShowForm}  setCurrent={setCurrent}/>
                     </div>
                 }
                 {current == "form-delete" && 
@@ -68,7 +68,7 @@ export default function Account({isShowForm, data}) {
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>        
-                        <DeleteAccount />
+                        <DeleteAccount isShowForm={isShowForm} setCurrent={setCurrent}/>
                     </div>
                 }
                 {current == "form-logout" &&
@@ -105,7 +105,5 @@ export default function Account({isShowForm, data}) {
         </>);
 }
 
-export {Login};
-export {SignUp};
 
 

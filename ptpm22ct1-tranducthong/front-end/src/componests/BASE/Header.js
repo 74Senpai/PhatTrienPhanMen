@@ -1,0 +1,61 @@
+import './CSS/Header.css';
+import { useState } from 'react';
+import Account from '../Login_Sigup_Account/Login.js';
+
+function Button({name, onClick}) {
+    return (
+      <div className="nav" id={name} onClick={() => onClick(name)}>{name}</div>
+    );
+}
+  
+function getName(){
+    let user_data; 
+    try{
+      let data = localStorage.getItem("user_data");
+      user_data = JSON.parse(data);
+      
+    }catch(err){
+      return false;
+    }
+  
+    return user_data; 
+}
+
+  function Header({ onChangePage }) {
+    const [searchContent, setContentsSeach] = useState('');
+    // const [popup, viewPopup] = usePopupView();
+    const [isShow, setShow] = useState(false);
+    // viewPopup(<Account />);
+    const data = getName();
+    let tmp;
+    if(data)
+      tmp = data.name;
+    
+    const userName = tmp;
+
+    return (<>
+      <header>
+        <div className="title nav" id="home" onClick={()=>{onChangePage('home')}}><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>
+        <Button name="BLOG" onClick={onChangePage}/>
+        <Button name="IT" onClick={onChangePage} />
+        <Button name="C++" onClick={onChangePage} />
+        <Button name="C#" onClick={onChangePage} />
+        <Button name="JAVA" onClick={onChangePage} />
+        <Button name="JAVASCRIPT" onClick={onChangePage} />
+        <Button name="OTHER" onClick={onChangePage} />
+        <div className='search'>
+          <input 
+          type='search' 
+          name='search'
+          placeholder='Search' 
+          onChange={(e) => setContentsSeach(e.target.value)}
+          value={searchContent}/>
+          <div id='Search'><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+        <div className="account nav" onClick={()=>{setShow(true)}}>{ data && userName || "Login" }</div>
+          {isShow && <Account isShowForm={setShow} data={data}/>}
+      </header>
+  </>);
+  }
+  
+export default Header;

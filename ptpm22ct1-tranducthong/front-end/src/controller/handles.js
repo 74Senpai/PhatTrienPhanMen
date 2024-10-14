@@ -1,6 +1,7 @@
-import Account, { SignUp, Login } from '../componests/Login.js';
-import Home from '../componests/Home.js';
-import Pages from '../componests/pages.js';
+import Account from '../componests/Login_Sigup_Account/Login.js';
+import Home from '../componests/BASE/Home.js';
+import Pages from '../componests/BASE/pages.js';
+import BlogManage from '../componests/Blog/Blog.js';
 
 export const todoAction = {
   currentSite: "home",
@@ -30,25 +31,23 @@ export const todoAction = {
 
 function changePages(site, setContents) {
     
+    site = site.toUpperCase();
+    // console.log(site);
     switch (site) {
-      case "home":
+      case "HOME":
         setContents(<Home />);
-        todoAction.setActive(site); 
+        todoAction.setActive("HOME"); 
         break;
       case "IT":
         setContents(<Pages />);
         todoAction.setActive(site);
       break;
-      case "signup":
-        setContents(<SignUp />);
-        todoAction.setActive(site);
-        break;
-      case "login-form":
-        setContents(<Login />);
-        todoAction.setActive(site);
-        break;
-      case "Login":
+      case "LOGIN":
         setContents(<Account />);
+        todoAction.setActive(site);
+        break;
+      case "BLOG":
+        setContents(<BlogManage />);
         todoAction.setActive(site);
         break;
       default:

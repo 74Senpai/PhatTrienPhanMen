@@ -1,4 +1,4 @@
-import '../CSS/Home.css';
+import './CSS/Home.css';
 
 let imgUrl = "https://cdn-blog.28tech.com.vn/thumbs/c%20tutorial/l%C3%A0m%20quen/b%C3%A0i%201/5_thumb_350.png";
 

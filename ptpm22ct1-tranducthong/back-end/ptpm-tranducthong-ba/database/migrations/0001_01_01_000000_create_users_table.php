@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {   
         Schema::create('roles', function(Blueprint $table) {
-            $table->integer('id_role')->autoIncrement()->primary();
+            $table->integer('id_role')->autoIncrement()->primary()->index();
             $table->string('name_role', 255)->unique();
             $table->text('describe');
         });
         
         Schema::create('users', function (Blueprint $table) {
-            $table->integer('user_id')->primary()->autoIncrement();
+            $table->integer('user_id')->primary()->autoIncrement()->index();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->index();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('id_role')->default(1);
+            $table->integer('id_role')->default(1)->index();
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('id_role')->references('id_role')->on('roles');
@@ -45,19 +45,19 @@ return new class extends Migration
         });
 
         Schema::create('authors', function (Blueprint $table) {
-            $table->integer('id_author')->primary()->autoIncrement();
-            $table->string('name_author', 255);
+            $table->integer('id_author')->primary()->autoIncrement()->index();
+            $table->string('name_author', 255)->index();
             $table->string('phone_number', 10)->unique();
-            $table->integer('id_role');
-            $table->integer('user_id')->unique();
+            $table->integer('id_role')->index();
+            $table->integer('user_id')->unique()->index();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('id_role')->references('id_role')->on('roles');
         });
 
         Schema::create('blogs', function (Blueprint $table) {
-            $table->integer('id_blog')->primary()->autoIncrement();
-            $table->string('name_blog', 255)->unique();
-            $table->integer('id_author');
+            $table->integer('id_blog')->primary()->autoIncrement()->index();
+            $table->string('name_blog', 255)->unique()->index();
+            $table->integer('id_author')->index();
             $table->text('content_blog');
             $table->integer('view');
             $table->foreign('id_author')->references('id_author')->on('authors')->onDelete('cascade');
