@@ -282,7 +282,24 @@ option {
     border: 0;
 }
 
-.site-wirte-blog-content{
+.write-option > input::-webkit-outer-spin-button,
+.write-option > input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.write-option > input{
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0;
+    border-radius: 0.2rem;
+    outline: none;
+    -moz-appearance: textfield; 
+    text-align: center;
+    cursor: text !important;
+}
+
+
+#site-wirte-blog-content{
     min-height: 58vh;
     width: 100%;
     outline: 0;
@@ -293,6 +310,7 @@ option {
     /* resize: none; */
     resize: vertical;
     background-color:  rgb(237, 237, 237);
+    padding-left: 2rem;
 }
 
 /* .onlyone{
@@ -303,4 +321,12 @@ option {
 .BlogManage .nav.active{
     background-color: #001a65;
     color: white;
+}
+
+.bold{
+    display: inline-block; 
+    font-weight: bold;
+    min-width: 1px;
+    /* background-color: #001965; */
+    min-height: 1px;
 }

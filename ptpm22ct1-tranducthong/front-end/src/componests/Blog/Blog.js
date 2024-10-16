@@ -1,5 +1,6 @@
 import './CSS/BlogManage.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo, useRef } from 'react';
+
 
 function Nav({children, ...navProps}){
 
@@ -9,7 +10,6 @@ function Nav({children, ...navProps}){
 }
 
 function NavColums({children}){
-
     return(<>
         <div className="colum-nav">
             {children}
@@ -62,13 +62,12 @@ function BlogsCount(){
 
 function BlogViewHeight({blog_id, heightValue, widthValue}){
 
-
     return(<>
         <div className='view-height' 
             id={"view-height" + blog_id } 
             style={ {height : heightValue, width: widthValue+"%"}}>
             <label 
-                for={"view-height" + blog_id} 
+                htmlFor={"view-height" + blog_id} 
                 className='label-view-height'
                 style={{fontSize: (widthValue > 5 ? "1" :widthValue/5) +"rem"}}>
                 Blog {blog_id}
@@ -118,6 +117,7 @@ function Statistical(){
 }
 
 function CommentContent({user_name, children}){
+
     return(<>
     <div className='box-comment'>
         <div className='name-user-comment'>{user_name}</div>
@@ -127,6 +127,7 @@ function CommentContent({user_name, children}){
 }
 
 function BlogComment({title, commentCount}){
+
     return(<>
         <div className='blog-title-comment'>{title}</div>
         <div className='comments-count'>Comments {`(${commentCount})`}
@@ -141,6 +142,7 @@ function BlogComment({title, commentCount}){
 }
 
 function CommentCount(){
+    
     return(<>
         <ToolBar />
         <div className='comments-result'>
@@ -149,31 +151,177 @@ function CommentCount(){
             <BlogComment title={"Hom nay hoc JAVA"} commentCount={8}/>
         </div>
     </>);
-}
+};
+
+const ACTION = {
+    site : "site-wirte-blog-content",
+    plus:"plus", 
+    minus:"minus",
+    codeSite : "code",
+    bold : "bold",
+    italic : "italic",
+    underline : "underline",
+    fontName: "fontName",
+    createLink : "createLink",
+    backColor : "backColor",
+    insertOrderedList : "insertOrderedList",
+    execCmdDOM : (site, command, value) => {
+        const editableDiv = document.getElementById(site);
+        document.execCommand(command, false, value);
+        editableDiv.focus();
+    }
+};
+
 
 function WriteBlog(){
+    const [fontSize, setFontSize] = useState(4);
+    const beforFontSize = useRef(0);
+    console.log("write blog", fontSize);
+    const [buttonState, setButtonState] = useState({
+        bold_btn : false,
+        italic_btn : false,
+        underline_btn : false,
+        insertOrderedList_btn : false,
+        code_btn : false,
+        markdown_btn : false,
+    });
+
+    const toggleButton = (button)=>{
+        setButtonState(prev => ({
+            ...prev,
+            [button] :  !prev[button]
+        }));
+        console.log("Button State", buttonState);
+    };
+
+    useEffect(()=>{
+        console.log("Event call", beforFontSize);
+        const element = document.getElementById(ACTION.site);
+        function handleKeyDown(){
+            if(beforFontSize.current !== 0){
+                setFontSize(beforFontSize.current);
+                ACTION.execCmdDOM(ACTION.site, "fontSize", fontSize);
+                beforFontSize.current = 0;
+            }
+        }
+        element.addEventListener('keydown',handleKeyDown);
+
+        return () => {
+            element.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+
+    const handlesFont = (action, value)=>{
+        switch(action){
+            case ACTION.plus:
+                setFontSize(pre => {
+                    const selObj = window.getSelection();
+                    // alert(selObj);
+                    const text = selObj.toString();
+                    if(text !== "" && beforFontSize.current == 0){
+                        beforFontSize.current = fontSize;
+                    }
+                   
+                    const newFontSize = (pre + 1) > 7 ? 7 : (pre + 1);
+                    ACTION.execCmdDOM(ACTION.site, "fontSize", newFontSize);
+                    return newFontSize; // Cập nhật giá trị mới cho fontSize
+                });
+                break;
+            case ACTION.minus:
+                setFontSize(pre => {
+                    const selObj = window.getSelection();
+                    // alert(selObj);
+                    const text = selObj.toString();
+                    if(text !== "" && beforFontSize.current == 0){
+                        beforFontSize.current = fontSize;
+                    }
+                    const newFontSize = (pre - 1) < 1 ? 1 : (pre - 1); 
+                    ACTION.execCmdDOM(ACTION.site, "fontSize", newFontSize);
+                    return newFontSize; // Cập nhật giá trị mới cho fontSize
+                });
+                break;
+            case ACTION.backColor:
+                ACTION.execCmdDOM(ACTION.site, action, value);
+                break;
+            // case ACTION.italic:
+            //     ACTION.execCmdDOM(ACTION.site, "italic");
+            //     toggleButton(action+"_btn");
+            //     break;
+            default:
+                const selObj = window.getSelection();
+                // alert(selObj);
+                const text = selObj.toString();
+                if(text === ""){
+                    toggleButton(action+"_btn");
+                }
+                ACTION.execCmdDOM(ACTION.site, action);
+        }
+    };
+
+    
+
     return(<>
         <div className='write-title-blog'>
             <input  type='textbox' maxLength="100" placeholder='Write you blog title here!!!'/>
-            <button type='submit' className='nav'><i class="fa-regular fa-paper-plane"></i></button>
+            <button type='submit' className='nav'><i className="fa-regular fa-paper-plane"></i></button>
         </div>
         <div className='write-option' draggable="true">
-            <button className='nav'><i class="fa-solid fa-bold"></i></button>
-            <button className='nav'><i class="fa-solid fa-italic"></i></button>
-            <button className='nav'><i class="fa-solid fa-underline"></i></button>
-            <button className='nav'><i class="fa-solid fa-font"></i></button>
-            <button className='nav'><i class="fa-solid fa-list"></i></button>
-            <button className='nav'><i class="fa-solid fa-link"></i></button>
-            <button className='nav onlyone'><i class="fa-solid fa-code"></i></button>
-            <button className='nav onlyone'><i class="fa-brands fa-markdown"></i></button>
-
+            <button 
+                className={"nav "+`${buttonState.bold_btn === true ? "active":""}`}
+                onClick={()=>{
+                    handlesFont(ACTION.bold)}}>
+                <i className="fa-solid fa-bold"></i>
+            </button>
+            <button 
+                className={"nav "+`${buttonState.italic_btn === true ? "active":""}`} 
+                onClick={()=>handlesFont(ACTION.italic)}>
+                <i className="fa-solid fa-italic"></i>
+            </button>
+            <button 
+                className={"nav "+`${buttonState.underline_btn === true ? "active":""}`} 
+                onClick={()=>handlesFont(ACTION.underline)}>
+                <i className="fa-solid fa-underline"></i>
+            </button>
+            <button className='nav' onClick={()=>handlesFont(ACTION.backColor)}>
+                <i className="fa-solid fa-font"></i>
+            </button>
+            <button className='nav' onClick={()=>handlesFont(ACTION.plus)}>
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <input 
+                // readOnly
+                className='nav' 
+                value={fontSize} type='number' 
+                readOnly
+                
+                />
+            <button className='nav' 
+                onClick={()=>handlesFont(ACTION.minus)}>
+                <i class="fa-solid fa-minus"></i>
+                </button>
+            <button 
+                className={"nav "+`${buttonState.insertOrderedList_btn === true ? "active":""}`}  
+                onClick={()=>handlesFont(ACTION.insertOrderedList)}>
+                <i className="fa-solid fa-list"></i>
+            </button>
+            <button className='nav' onClick={()=>handlesFont(ACTION.createLink, "red")}>
+                <i className="fa-solid fa-link"></i>
+            </button>
+            <button className='nav onlyone'  onClick={()=>handlesFont(ACTION.codeSite)}>
+                <i className="fa-solid fa-code"></i>
+            </button>
+            <button className='nav onlyone'><i className="fa-brands fa-markdown"></i></button>
         </div>
-        <textarea className='site-wirte-blog-content'></textarea>
+        <div id='site-wirte-blog-content' 
+            contentEditable="true">
+            
+        </div>
+        <div id="hidden" style={{display : "none !important"}}></div>
     </>);
 }
 
+function useBlogNav(){
 
-export function useBlogNav(){
     const [contents, setContents] = useState(<BlogsCount />);
     const [currentNav, setCurrentNav] = useState("posts");
 
@@ -198,9 +346,11 @@ export function useBlogNav(){
     return[contents, currentNav, changeNav];
 }
 
+
 export default function BlogManage(){
    
     const [content, currentNav, changeNav] = useBlogNav();
+    console.log("Re-render");
     
     return(<>
         <div className="BlogManage">
@@ -215,8 +365,8 @@ export default function BlogManage(){
             </div>
             {currentNav !== "newblog" && 
             <button className="new-post nav" onClick={()=>changeNav("newblog")}>
-                <i class="fa-solid fa-plus"></i>
+                <i className="fa-solid fa-plus"></i>
             </button>}
         </div>
     </>);
-}
+};

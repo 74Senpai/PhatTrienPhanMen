@@ -46,3 +46,6 @@ html{
     text-decoration: underline;
 }
 
+.nav:focus{
+    outline: 0;
+}
