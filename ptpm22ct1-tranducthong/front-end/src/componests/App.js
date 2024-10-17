@@ -1,6 +1,6 @@
 
 import '../CSS/App.css';
-import { Base } from './BASE/Base.js';
+import { Base } from './BASE';
 
 function App() {
   
@@ -8,7 +8,6 @@ function App() {
     <div className="app">
       <Base />
     </div>  
-     
   </>);
 } 
 

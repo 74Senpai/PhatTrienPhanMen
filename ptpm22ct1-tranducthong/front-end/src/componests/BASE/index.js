@@ -2,9 +2,9 @@
 import Home from "./Home.js";
 import Footer from "./Footer.js";
 import Pages from "./pages.js";
-import Account from "../Login_Sigup_Account/Login.js";
+import Account from "../Login_Sigup_Account";
 import { useState } from "react";
-import BlogManage from "../Blog/Blog.js";
+import BlogManage from "../Blog/index.js";
 import Loading from "../Loading/Loading.js";
 import "../BASE/CSS/Header.css";
 

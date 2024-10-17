@@ -1,7 +1,7 @@
-import Account from '../componests/Login_Sigup_Account/Login.js';
+import Account from '../componests/Login_Sigup_Account';
 import Home from '../componests/BASE/Home.js';
 import Pages from '../componests/BASE/pages.js';
-import BlogManage from '../componests/Blog/Blog.js';
+import BlogManage from '../componests/Blog';
 
 export const todoAction = {
   currentSite: "home",

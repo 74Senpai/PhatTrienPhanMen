@@ -330,3 +330,17 @@ option {
     /* background-color: #001965; */
     min-height: 1px;
 }
+
+#overview{
+    display: block;
+    position: absolute;
+    top: 1rem;
+    width: 75%;
+    background-color:rgb(237, 237, 237);
+    padding: 2rem;
+    border-radius: 0.3rem;
+    border: 0.1rem solid #001a65;
+    box-shadow: 0rem 0rem 0.5rem gray;
+    max-height: 50vh;
+    overflow-y: scroll;
+}
