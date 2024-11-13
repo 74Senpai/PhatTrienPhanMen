@@ -2,12 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './componests/App.js';
 import reportWebVitals from './default/reportWebVitals.js';
+import { MessageProvider } from './Context/MessageContex.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // require('dotenv').config();
 root.render(
+  
   <React.StrictMode>
-    <App />
+    <MessageProvider>
+      <App />
+    </MessageProvider>
   </React.StrictMode>
 );
 

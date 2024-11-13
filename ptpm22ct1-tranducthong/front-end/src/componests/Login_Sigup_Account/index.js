@@ -1,7 +1,8 @@
 import './CSS/Login.css';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { todoAction } from '../../controller/handles.js';
 import { Infor, AuthorRegister, Login, SignUp, DeleteAccount, Logout } from './Form.js';
+import { MessageContex } from '../../Context/MessageContex';
 
 
 function Method({data , setCurrent}){
@@ -25,20 +26,18 @@ function Method({data , setCurrent}){
     </>);
 }
 
-
-
 export default function Account({isShowForm, data}) {
     // const [loginPage, setLoginPage] = useState(<Login />);
     const [tab, setTab] = useState("Login");
-    const beforNav = todoAction.mainSite;
     const [current, setCurrent] = useState('');
     const [loading, setLoading] = useState(false);
-
+    const {setShowPopup} = useContext(MessageContex);
+    const beforNav = "";
     console.log("Befor nav", beforNav);
     console.log("Pros",data);
     if(data){
         return(<>
-            <div id='fiter-bg' onClick={()=>{isShowForm(false); todoAction.setActive(beforNav)}}></div>
+            <div id='fiter-bg' onClick={()=>{isShowForm(false)}}></div>
             <div id='form-method'>
                  <Method data={data} setCurrent={setCurrent} />
                  {current == "form-edit" && 
@@ -85,9 +84,9 @@ export default function Account({isShowForm, data}) {
     }
     return (
         <>
-        <div id='fiter-bg' onClick={()=>{isShowForm(false); todoAction.setActive(beforNav)}}></div>
+        <div id='fiter-bg' onClick={()=>{isShowForm(false);}}></div>
             <div id='form-signUp'>
-                <div className='cancle-btn' onClick={()=>{isShowForm(false); todoAction.setActive(beforNav)}}>
+                <div className='cancle-btn' onClick={()=>{isShowForm(false);}}>
                     <i class="fa-solid fa-xmark"></i>
                 </div>
                 <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>
@@ -100,7 +99,7 @@ export default function Account({isShowForm, data}) {
                     có những tại ngiệm tốt nhất
                 </div>
                 <Login isShowForm={isShowForm} tab={tab} load={setLoading}/>
-                <SignUp isShowForm={isShowForm} tab={tab} load={setLoading}/>
+                <SignUp isShowForm={isShowForm} tab={tab} load={setLoading} setShowPopup={setShowPopup}/>
             </div>         
         </>);
 }

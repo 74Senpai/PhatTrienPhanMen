@@ -307,7 +307,7 @@ option {
     font-size: 1rem;
     padding: 1rem;
     margin-top: 2rem;
-    /* resize: none; */
+   
     resize: vertical;
     background-color:  rgb(237, 237, 237);
     padding-left: 2rem;
@@ -331,16 +331,30 @@ option {
     min-height: 1px;
 }
 
-#overview{
+#overview-popup{
     display: block;
     position: absolute;
     top: 1rem;
     width: 75%;
-    background-color:rgb(237, 237, 237);
+    background-color:rgb(255, 255, 255);
     padding: 2rem;
     border-radius: 0.3rem;
     border: 0.1rem solid #001a65;
     box-shadow: 0rem 0rem 0.5rem gray;
     max-height: 50vh;
     overflow-y: scroll;
+    z-index: 100;
+}
+
+#title-overview{
+    font-size: larger;
+    text-wrap: wrap;
+    font-weight: bold;
+    font-size: 2rem;
+    width: 100%;
+}
+
+#overview{
+    width: 100%;
+    margin-top: 2rem;
 }

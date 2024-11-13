@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { todoAction } from '../../controller/handles.js';
+import { useState, useEffect, useContext } from 'react';
+// import { todoAction } from '../../controller/handles.js';
 
 
 function localSave(name, data){
@@ -199,21 +199,23 @@ export function AuthorRegister({isShowForm, setCurrent}){
 }
 
 
-export function SignUp({isShowForm, tab}) {
+export function SignUp({isShowForm, tab, setShowPopup}) {
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessages, setErrorMessages] = useState('');
     // const [isLogin, showLogin, setShow, changeLoginState] = useLogin('');
-    useEffect(() => {
-        if (tab === "Signup") {
-            todoAction.setActive("Signup", false);
-        }
-    }, [tab]);
 
     const handleSignUp = async (e) => {
         e.preventDefault(); // Ngăn hành vi gửi form mặc định
 
+        setShowPopup(prev => ({
+            ...prev,
+            message: "Processing signup...",
+            type: "info",
+            isShow: true,
+        }));
+        
         try {
             const response = await fetch('http://127.0.0.1:8000/api/sign-up', {
                 method: 'POST',
@@ -243,7 +245,6 @@ export function SignUp({isShowForm, tab}) {
             localSave( "user_data", data.data);   
             // changeLoginState(saveData);
             isShowForm(!saveData);
-            todoAction.setActive(todoAction.mainSite);
         } catch (error) {
             // Xử lý lỗi nếu có
             setErrorMessages(error.message);
@@ -310,15 +311,10 @@ export function Login({isShowForm, tab}){
     const [errorMessages, setErrorMessages] = useState('');
     // const [isLogin, showLogin, setShow, changeLoginState] = useLogin('');
 
-    useEffect(() => {
-        if (tab === "Login") {
-            todoAction.setActive("Login", false);
-        }
-    }, [tab]);
-
+    
     const handleLogin = async (e) => {
         e.preventDefault(); 
-
+        
         try {
             const response = await fetch('http://127.0.0.1:8000/api/login', {
                 method: 'POST',
@@ -348,7 +344,7 @@ export function Login({isShowForm, tab}){
             localSave( "user_data", data.data);   
             // changeLoginState(saveData);  
             isShowForm(!saveData);
-            todoAction.setActive(todoAction.mainSite);
+            
         } catch (error) {
             // Xử lý lỗi nếu có
             setErrorMessages(error.message);

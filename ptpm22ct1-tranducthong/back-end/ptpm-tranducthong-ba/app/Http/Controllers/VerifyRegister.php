@@ -13,9 +13,9 @@ class VerifyRegister extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|string|email|max:255|unique:users',
+            'password'  => 'required|string|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -24,18 +24,18 @@ class VerifyRegister extends Controller
 
         try {
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'password'  => Hash::make($request->password),
             ]);
 
             $token = $user->createToken($request->name);
 
         
             return response()->json([
-                'data' => new UserResource($user),
-                'token' => $token->plainTextToken,
-                'token_type' => 'Bearer',
+                'data'          => new UserResource($user),
+                'token'         => $token->plainTextToken,
+                'token_type'    => 'Bearer',
             ], 201);
 
         } catch (\Exception $e) {
@@ -59,9 +59,9 @@ class VerifyRegister extends Controller
             $token = $user->createToken($user->name)->plainTextToken;
 
             return response()->json([
-                'token' => $token,
-                'token_type' => 'Bearer',
-                'data' => $user,
+                'token'         => $token,
+                'token_type'    => 'Bearer',
+                'data'          => $user,
             ]);
         }else{
             return response()->json(['message' => 'Sai mật khẩu'], 401);

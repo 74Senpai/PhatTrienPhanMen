@@ -1,6 +1,7 @@
 import './CSS/BlogManage.css';
-import { useEffect, useState, memo, useRef } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import WriteBlog from './WriteBlog';
+import { MessageContex } from '../../Context/MessageContex';
 
 function Nav({children, ...navProps}){
 
@@ -188,7 +189,8 @@ export default function BlogManage(){
    
     const [content, currentNav, changeNav] = useBlogNav();
     console.log("Re-render");
-    
+    const {setShowPopup} = useContext(MessageContex);
+
     return(<>
         <div className="BlogManage">
             <NavColums>
