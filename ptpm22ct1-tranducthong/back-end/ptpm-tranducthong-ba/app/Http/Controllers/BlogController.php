@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+
 class BlogController extends Controller
 {
 
@@ -35,7 +36,7 @@ class BlogController extends Controller
                     ['id_type', '=', $typeBlog],
                     ['id_blog', '=', $id_blog],
                 ])->exists();
-
+                
                 if (!$exist) {
                     $created = ListBlogByType::create([
                         'id_type' => $typeBlog,
@@ -55,6 +56,21 @@ class BlogController extends Controller
         }
     }
 
+    private function removeBlogInList(int $id_blog){
+        try{
+            DB::beginTransaction();
+            DB::table('list_blog_by_type')
+                ->where('id_blog', $id_blog)
+                ->delete();
+
+            DB::commit();
+            return true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return false;
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -66,6 +82,7 @@ class BlogController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    //create v
     public function createBlog(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -160,61 +177,87 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    private function authorUpdate(int $id_blog, $data_update)
-    {
-        $blog = Blog::where('id_blog', '=', $id_blog)->first();
+   
 
-
-        if ($blog != null) {
-            DB::beginTransaction();
-
-            $deleted = DB::table('list_blog_by_type')->where('id_blog', '=', $id_blog)->delete();
-            if (!$deleted) {
-                DB::rollBack();
-                return false;
-            }
-
-            $blog->content_blog = $data_update->content;
-
-            $createListBlogByType = $this->createListBlogByType($id_blog, $data_update->type_blog);
-            if (!$createListBlogByType) {
-                DB::rollBack();
-                return false;
-            }
-            $blog->save();
-            DB::commit();
-            return true;
-        }
-    }
-    public function update(Request $request)
-    {
+    public function updateBlog(Request $request){
         $user = $request->user();
-        $user_access = Role::where('id_role', $user->id_role)->exists();
-        if (!$user_access)
-            return;
+        if($user->id_role == config('roles.admin') || $user->id_role == config('roles.author')){
+            $validate = Validator::make($request->all(), [
+                'id_blog'       => 'int|required',
+                'name_blog'     => 'required|string|max:255',
+                'content_blog'  => 'required|string',
+                'type_blog'     => 'required|array',
+                'type_blog.*'   => 'int'
+            ]);
 
-        switch ($user->id_role) {
-            case config('roles.admin'):
-                break;
-            case config('roles.author'):
-                $data = [
-                    'content' => $request->content_blog,
-                    'type_blog' => $request->type_blog
-                ];
-                $result = $this->authorUpdate($request->id_blog, $data);
-                if (!$result)
-                    return response()->json(['error' => 'Can not update blog'], 500);
+            if($validate->fails()){
+                return response()->json([
+                    'error'     => 'Data not validity',
+                    'message'   => $validate
+                ],400);
+            }
+            
+            DB::beginTransaction();
+            try{
+                $blog = Blog::find($request->id_blog);
+                if($blog == null){
+                    DB::rollBack();
+                    return response()->json([ 'error' => 'Not found'], 404);
+                }
 
-            case config('roles.user'):
-                break;
-            default:
-                return response()->json(['error' => 'Can not find user role'], 500);
+                if($user->id_role == config('roles.author')){
+                    $author = Author::find($blog->id_author);
+                    if($author == null){
+                        DB::rollBack();
+                        return response()->json(['error' => 'Can not find author'],404);
+                    }
+
+                    if($author->user_id != $user->user_id){
+                        DB::rollBack();
+                        return response()->json(['error' => 'Author unauthorized to update'],401);
+                    }
+                }
+
+                $blog->name_blog    = $request->name_blog;
+                $blog->content_blog = $request->content_blog;
+                $removeInList       = $this->removeBlogInList($request->id_blog); 
+                if(!$removeInList){
+                    DB::rollBack();
+                    return response()->json([
+                        'error' => 'Update cascade issue when remove blog type '
+                    ],501);
+                }
+                $addInList          = $this->createListBlogByType($request->id_blog, $request->type_blog);
+
+                if(!$addInList){
+                    DB::rollBack();
+                    return response()->json([
+                        'error' => 'Update cascade issue when add blog type '
+                    ],501);
+                }
+
+                $blog->save();
+                DB::commit();
+                return response()->json([
+                    'success' => 'Update successfully !!!'
+                ], 201);
+ 
+            }catch(\Exception $e){
+                DB::rollBack();
+                return response()->json([
+                    'error'     => 'Can not  update blog',
+                    'message'   => $e->getMessage()
+                ], 500);
+            }
         }
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+        return response()->json([
+            'error'     => 'Unauthorized to update',
+            'message'   => 'Please use author account !!!'
+        ], 401);
+    }
+    
+    //Delete v
     public function destroyBlog(Request $request, int $id)
     {
         $user = $request->user();
@@ -264,13 +307,12 @@ class BlogController extends Controller
                 }
                 
                 return response()->json(['error' => 'Can not delete blog'], 500);
-            case config('roles.user'):
-                break;
             default:
                 return response()->json(['error' => 'Can not find user role'], 500);
         }
     }
 
+    //Show all v
     public function showAllBlogs(Request $request)
     {
         $blogs = Blog::all();

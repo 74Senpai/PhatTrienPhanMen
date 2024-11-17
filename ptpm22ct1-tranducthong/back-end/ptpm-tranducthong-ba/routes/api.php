@@ -49,5 +49,6 @@ Route::prefix('author')
     ->group(function(){
         Route::post('blog/create-new', [BlogController::class, 'createBlog']);
         Route::delete('blog/delete/id={id}', [BlogController::class, 'destroyBlog']);
+        Route::put('blog/update', [BlogController::class, 'updateBlog']);
 });
     
