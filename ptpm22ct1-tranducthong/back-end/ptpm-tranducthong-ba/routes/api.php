@@ -30,3 +30,24 @@ Route::controller(VerifyRegister::class)->group(function () {
     Route::post('login',  'login');
     Route::post('logout', 'logout')->middleware('auth:sanctum');
 });
+
+Route::middleware(['auth:sanctum'])
+    ->prefix(config('admin.prefix'))
+    ->group(function(){
+            Route::post('blog-type/create', [BlogTypeController::class, 'createNewBlogType']);
+});
+
+Route::prefix('public')->group(function(){
+    Route::get('blog-type/show/all', [BlogTypeController::class, 'readAllBlogType']);
+    Route::get('blog-type/show/id={id}', [BlogTypeController::class, 'readBlogTypeById']);
+    Route::get('blog/all', [BlogController::class, 'showAllBlogs']);
+    Route::get('blog/id={id}', [BlogController::class, 'showBlogById']);
+});
+
+Route::prefix('author')
+    ->middleware(['auth:sanctum'])
+    ->group(function(){
+        Route::post('blog/create-new', [BlogController::class, 'createBlog']);
+        Route::delete('blog/delete/id={id}', [BlogController::class, 'destroyBlog']);
+});
+    

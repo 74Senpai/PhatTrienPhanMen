@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './componests/App.js';
 import reportWebVitals from './default/reportWebVitals.js';
 import { MessageProvider } from './Context/MessageContex.js';
+import { BlogTypesProvider } from './Context/PagesContext.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // require('dotenv').config();
@@ -10,7 +11,9 @@ root.render(
   
   <React.StrictMode>
     <MessageProvider>
-      <App />
+      <BlogTypesProvider>
+        <App />
+      </BlogTypesProvider>
     </MessageProvider>
   </React.StrictMode>
 );

@@ -18,7 +18,7 @@ export function MessageProvider({children}){
     return (
         <MessageContex.Provider value={{showPopup, setShowPopup}}>
             {children}
-            <Loading type={showPopup.type} mess={showPopup.message} isShow={showPopup.isShow}/>
+            {showPopup.isShow && <Loading type={showPopup.type} mess={showPopup.message} isShow={true}/>}
         </MessageContex.Provider>
     )
 }

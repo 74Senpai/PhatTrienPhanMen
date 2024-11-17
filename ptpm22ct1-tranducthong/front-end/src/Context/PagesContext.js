@@ -1,19 +1,16 @@
 import { createContext, useContext, useState } from "react";
 
-const PopupContext = createContext();
+export const BlogTypesContext = createContext();
 
-export function PopupProvider({ children }) {
-  const [popup, setPopup] = useState('');
+export function BlogTypesProvider({children}){
 
-  const viewPopup = (view) => setPopup(view);
+  const [blogTypes, setBlogTypes ] = useState([]);
 
-  return (
-    <PopupContext.Provider value={{ popup, viewPopup }}>
+  return(
+    <BlogTypesContext.Provider value={{blogTypes, setBlogTypes}}>
       {children}
-    </PopupContext.Provider>
+    </BlogTypesContext.Provider>
   );
+
 }
 
-export function usePopup() {
-  return useContext(PopupContext);
-}

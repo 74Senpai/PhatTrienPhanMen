@@ -91,8 +91,8 @@ export default function Account({isShowForm, data}) {
                 </div>
                 <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>
                 <div className='nav-Login'>
-                    <div className="login-tab"  id="Login" onClick={()=>setTab("Login")}>Login</div>
-                    <div className="signUp-tab" id="Signup" onClick={()=>setTab("Signup")}>Sign Up</div>
+                    <div className={"login-tab "+ (tab=="Login" ? "active": "")}  id="Login" onClick={()=>{setTab("Login")}}>Login</div>
+                    <div className={"signUp-tab "+ (tab!="Login" ? "active": "")} id="Signup" onClick={()=>{setTab("Signup")}}>Sign Up</div>
                 </div>
                 <div className='guide-text'>
                     Hoàn tất các bước để đăng ký tài khoản và 

@@ -62,7 +62,8 @@ export default function WriteConfigBtn( { toggleInlineStyle, buttonState} ){
                         onClick={()=>toggleInlineStyle(btn.action(buttonState))}
                         dangerouslySetInnerHTML={{ __html: btn.icon }}
                     />
-                ))}
+                ))
+            }
         </div>
     );
 }

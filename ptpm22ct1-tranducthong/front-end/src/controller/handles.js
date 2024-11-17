@@ -20,6 +20,8 @@ function changePages(site, setContents) {
       case "BLOG":
         setContents(<BlogManage />);
         break;
+      case "ADMIN":
+        setContents("Default");
       default:
         setContents("Default");
     }

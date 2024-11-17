@@ -49,3 +49,7 @@ html{
 .nav:focus{
     outline: 0;
 }
+
+.type-blog{
+    margin: 0.25rem;
+}

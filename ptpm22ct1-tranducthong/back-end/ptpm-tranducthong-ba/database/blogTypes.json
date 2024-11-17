@@ -1,0 +1,37 @@
+[
+    {
+        "type_name" : "C++",
+    	"describe"	: "",
+        "total_blog": 0
+    },
+    {
+        "type_name" : "C#",
+    	"describe"	: "",
+        "total_blog": 0
+    },
+    {
+        "type_name" : "C",
+    	"describe"	: "",
+        "total_blog": 0
+    },
+    {
+        "type_name" : "JAVA",
+    	"describe"	: "",
+        "total_blog": 0
+    },
+    {
+        "type_name" : "JAVASCRIPT",
+    	"describe"	: "",
+        "total_blog": 0
+    },
+    {
+        "type_name" : "PYTHON",
+    	"describe"	: "",
+        "total_blog": 0
+    },
+    {
+        "type_name" : "PASCAL",
+    	"describe"	: "",
+        "total_blog": 0
+    }
+]

@@ -1,5 +1,5 @@
 // import './CSS/BlogManage.css';
-import { useEffect, useState, memo, useRef } from 'react';
+import { useEffect, useState, memo, useRef, useContext } from 'react';
 import { marked } from 'marked';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
@@ -8,7 +8,7 @@ import { Editor, EditorState,  RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import WriteConfigBtn from './TextEditor';
 import { convertToHTML } from 'draft-js';
-
+import { BlogTypesContext } from '../../Context/PagesContext';
 
 export default function WriteBlog(){
 
@@ -22,6 +22,9 @@ export default function WriteBlog(){
         overview_btn : false,
     });
    
+    const {blogTypes} = useContext(BlogTypesContext);
+
+
     const [markdown, setMarkDown] = useState('');
     const [code, setCode] = useState('');
     const [editContent, setEditContent] = useState('');
@@ -82,10 +85,20 @@ export default function WriteBlog(){
                 placeholder='Write you blog title here!!!'/>
             <button type='submit' className='nav'><i className="fa-regular fa-paper-plane"></i></button>
         </div>
-        <div >
-            <select className='type-blog'>
-                <option>Chose type blog</option>
-            </select>
+        <div className='box-type-blogs'>
+            <h4>Chọn thể loại Blog</h4>
+            {
+                blogTypes.map((value)=>(
+                    <div className='type-blog'>
+                        <label for={'type-id-'+value.id_type}>{value.type_name}</label>
+                        <input 
+                            className='type-checkbox'
+                            id={'type-id-'+value.id_type} 
+                            type='checkbox' 
+                            value={value.id_type}/> 
+                    </div>
+                ))
+            }
         </div>
         <WriteConfigBtn toggleInlineStyle={toggleInlineStyle}  buttonState={buttonState} />
         <div id='site-wirte-blog-content'>

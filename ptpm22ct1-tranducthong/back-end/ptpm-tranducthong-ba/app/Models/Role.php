@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     use HasFactory;
-    private $primaryKey = 'id_role';
+    protected $primaryKey = 'id_role';
     public $incrementing = true;
     protected $keyType = 'int';
     protected $fillable = [

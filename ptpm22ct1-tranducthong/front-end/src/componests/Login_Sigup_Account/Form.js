@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { token } from '../../controller/pageFunction';
 // import { todoAction } from '../../controller/handles.js';
 
 
@@ -127,8 +128,6 @@ export function AuthorRegister({isShowForm, setCurrent}){
     const handleSignUpAuthor = async(e)=>{
         e.preventDefault();
         
-        const token = localStorage.getItem('access_token');
-
         try {
             const response = await fetch('http://127.0.0.1:8000/api/author/register', {
                 method: 'POST',

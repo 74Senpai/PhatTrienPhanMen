@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {   
         Schema::create('roles', function(Blueprint $table) {
-            $table->integer('id_role')->autoIncrement()->primary()->index();
+            $table->integer('id_role')->primary()->index();
             $table->string('name_role', 255)->unique();
             $table->text('describe');
         });
@@ -60,6 +60,7 @@ return new class extends Migration
             $table->integer('id_author')->index();
             $table->text('content_blog');
             $table->integer('view');
+            $table->integer('show_type')->references('id_write_type')->on('write_type')->onDelete('cascade');
             $table->foreign('id_author')->references('id_author')->on('authors')->onDelete('cascade');
         });
 
@@ -88,6 +89,11 @@ return new class extends Migration
             $table->foreign('id_type')->references('id_type')->on('type_blog')->onDelete('cascade');
             $table->foreign('id_blog')->references('id_blog')->on('blogs')->onDelete('cascade');
         });
+
+        Schema::create('write_type', function(Blueprint $table){
+            $table->integer('id_write_type')->primary()->autoIncrement();
+            $table->string('show_type_name')->unique();
+        });
     }
 
     /**
@@ -95,15 +101,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('list_blog_by_type');
+        Schema::dropIfExists('comments');
+        Schema::dropIfExists('blogs');
+        Schema::dropIfExists('type_blog');
+        Schema::dropIfExists('write_type');
         Schema::dropIfExists('authors');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('roles');
         Schema::dropIfExists('sessions');
         Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('type_blog');
-        Schema::dropIfExists('blogs');
-        Schema::dropIfExists('comments');
-        Schema::dropIfExists('list_blog_by_type');
     }
 
 };

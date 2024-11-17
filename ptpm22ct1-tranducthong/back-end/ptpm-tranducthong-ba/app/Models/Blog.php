@@ -9,12 +9,13 @@ class Blog extends Model
 {
     use HasFactory;
 
-    private $primaryKey = 'id_blog';
+    protected $primaryKey = 'id_blog';
     public $incrementing = true;
     protected $keyType = 'int';
     protected $fillable = [
         'id_blog','name_blog', 'id_author', 'content_blog', 'view',
     ];
 
+    public $timestamps = false;
 
 }
