@@ -35,6 +35,8 @@ Route::middleware(['auth:sanctum'])
     ->prefix(config('admin.prefix'))
     ->group(function(){
             Route::post('blog-type/create', [BlogTypeController::class, 'createNewBlogType']);
+            Route::get('comment/all', [CommentsController::class, 'getAllComments']);
+            Route::get('comment/user/id={id}', [CommentsController::class, 'getUserAllComments']);
 });
 
 Route::prefix('public')->group(function(){
@@ -42,6 +44,7 @@ Route::prefix('public')->group(function(){
     Route::get('blog-type/show/id={id}', [BlogTypeController::class, 'readBlogTypeById']);
     Route::get('blog/all', [BlogController::class, 'showAllBlogs']);
     Route::get('blog/id={id}', [BlogController::class, 'showBlogById']);
+    Route::get('comment/blog/id={id}', [CommentsController::class, 'getBlogAllComments']);
 });
 
 Route::prefix('author')
@@ -53,3 +56,9 @@ Route::prefix('author')
         Route::get('blog/all', [AuthorController::class, 'getAllBlogInformation']);
 });
     
+Route::prefix('user')
+    ->middleware(['auth:sanctum'])
+    ->group(function(){
+        Route::post('comment/create-new', [CommentsController::class, 'createNewComment']);
+        Route::get('comment/user/id={id}', [CommentsController::class, 'getUserAllComments']);
+});
