@@ -13,9 +13,13 @@ class Blog extends Model
     public $incrementing = true;
     protected $keyType = 'int';
     protected $fillable = [
-        'id_blog','name_blog', 'id_author', 'content_blog', 'view',
+        'id_blog','name_blog', 
+        'id_author', 'content_blog', 
+        'view', 'show_type', 
+        'updated_at', 'created_at',
+        'blog_describe', 'thumbnail'
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
 }

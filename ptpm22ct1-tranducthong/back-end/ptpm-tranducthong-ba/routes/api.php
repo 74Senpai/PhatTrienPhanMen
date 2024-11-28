@@ -50,5 +50,6 @@ Route::prefix('author')
         Route::post('blog/create-new', [BlogController::class, 'createBlog']);
         Route::delete('blog/delete/id={id}', [BlogController::class, 'destroyBlog']);
         Route::put('blog/update', [BlogController::class, 'updateBlog']);
+        Route::get('blog/all', [AuthorController::class, 'getAllBlogInformation']);
 });
     

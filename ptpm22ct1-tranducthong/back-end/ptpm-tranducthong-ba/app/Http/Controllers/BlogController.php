@@ -43,6 +43,10 @@ class BlogController extends Controller
                         'id_blog' => $id_blog,
                     ]);
 
+                    $blog_on_type = TypeBlog::find($typeBlog);
+                    $blog_on_type->total_blog += 1;
+                    $blog_on_type->save();                    
+
                     if (!$created) {
                         return false;
                     }
@@ -59,6 +63,13 @@ class BlogController extends Controller
     private function removeBlogInList(int $id_blog){
         try{
             DB::beginTransaction();
+            $results = DB::table('list_blog_by_type')
+                ->where('id_blog', $id_blog)
+                ->get();
+            
+            $id_types = $results->pluck('id_type')->toArray();  
+            TypeBlog::whereIn('id_type', $id_types)->decrement('total_blog'); 
+
             DB::table('list_blog_by_type')
                 ->where('id_blog', $id_blog)
                 ->delete();
@@ -86,10 +97,13 @@ class BlogController extends Controller
     public function createBlog(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name_blog' => 'required|string|max:255|unique:blogs',
-            'content_blog' => 'required|string',
-            'type_blog' => 'required|array',
-            'type_blog.*' => 'int'
+            'name_blog'     => 'required|string|max:255|unique:blogs',
+            'content_blog'  => 'required|string',
+            'type_blog'     => 'required|array',
+            'type_blog.*'   => 'int',
+            'blog_describe' => 'required|string|max:255',
+            'thumbnail'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'show_type'     => 'required|int'
         ]);
 
         if ($validator->fails()) {
@@ -97,23 +111,29 @@ class BlogController extends Controller
         }
 
         DB::beginTransaction();
-
+        $path = null;
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('images', 'public');
+        }
         try {
             $user = $request->user();
             $author = Author::where('user_id', $user->user_id)->first();
 
             // Kiểm tra tác giả
             if ($author == null) {
-                DB::rollBack();  // Rollback ngay khi không tìm thấy tác giả
+                DB::rollBack(); 
                 return response()->json(['error' => 'Author not found'], 404);
             }
 
             // Tạo blog
             $blog = Blog::create([
-                'name_blog' => $request->name_blog,
-                'id_author' => $author->id_author,
-                'content_blog' => $request->content_blog,
-                'view' => 0
+                'name_blog'     => $request->name_blog,
+                'id_author'     => $author->id_author,
+                'content_blog'  => $request->content_blog,
+                'view'          => 0,
+                'blog_describe' => $request->blog_describe,
+                'thumbnail'     => $path,
+                'show_type'     => $request->show_type
             ]);
 
             // Tạo danh sách loại blog
@@ -184,10 +204,13 @@ class BlogController extends Controller
         if($user->id_role == config('roles.admin') || $user->id_role == config('roles.author')){
             $validate = Validator::make($request->all(), [
                 'id_blog'       => 'int|required',
-                'name_blog'     => 'required|string|max:255',
+                'name_blog'     => 'required|string|max:255|unique:blogs',
                 'content_blog'  => 'required|string',
                 'type_blog'     => 'required|array',
-                'type_blog.*'   => 'int'
+                'type_blog.*'   => 'int',
+                'blog_describe' => 'required|string|max:255',
+                'thumbnail'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'show_type'     => 'required|int'
             ]);
 
             if($validate->fails()){
@@ -218,8 +241,16 @@ class BlogController extends Controller
                     }
                 }
 
+                $path = null;
+                if ($request->hasFile('thumbnail')) {
+                    $path = $request->file('thumbnail')->store('images', 'public');
+                }
                 $blog->name_blog    = $request->name_blog;
                 $blog->content_blog = $request->content_blog;
+                $blog->show_type    = $request->show_type;
+                $blog->blog_describe= $request->blog_describe;
+                $blog->thumbnail    = $path;
+
                 $removeInList       = $this->removeBlogInList($request->id_blog); 
                 if(!$removeInList){
                     DB::rollBack();
@@ -315,23 +346,51 @@ class BlogController extends Controller
     //Show all v
     public function showAllBlogs(Request $request)
     {
-        $blogs = Blog::all();
+        // $blogs = Blog::all();
+        
+        $blogs_infor = DB::select(
+            "SELECT blogs.id_blog, blogs.name_blog, blogs.view, blogs.updated_at,
+                            blogs.show_type, type_blog.id_type, type_blog.type_name, 
+                            comments.id_comment
+                    FROM blogs
+                        INNER JOIN list_blog_by_type as list_type on list_type.id_blog = blogs.id_blog
+                        INNER JOIN type_blog on type_blog.id_type = list_type.id_type
+                        LEFT JOIN comments on comments.id_blog = blogs.id_blog
+                    ");
+
+        $blogs_infor = collect($blogs_infor);
+        $groupedBlogs = $blogs_infor->groupBy('id_blog');
+        $result = $groupedBlogs->map(function ($items, $id_blog) {
+            $types = $items->pluck('id_type')->toArray(); // Lấy tất cả id_type
+            $typeNames = $items->pluck('type_name')->toArray(); // Lấy tất cả type_name
+    
+            return [
+                'id_blog' => $id_blog,
+                'name_blog' => $items->first()->name_blog, // Giữ lại name_blog
+                'view' => $items->first()->view, // Giữ lại view
+                'updated_at' => $items->first()->updated_at, // Giữ lại updated_at
+                'show_type' => $items->first()->show_type, // Giữ lại show_type
+                'id_types' => $types, // Mảng các id_type
+                'type_names' => $typeNames // Mảng các type_name
+            ];
+        });
 
         return response()->json([
-            'success' => 'Get blogs successfully',
-            'data' => $blogs
-        ], 302);
+            'success'   => 'Query data successfully !!!!',
+            'data'      => $result
+        ], 200);
+        
+        // 
     }
 
     public function showBlogById(Request $request, int $id)
     {
         $blog = Blog::find($id);
-
+        $blog->thumbnail = url('storage/' . $blog->thumbnail);
         return response()->json([
             'success' => 'Get blog success',
             'data' => $blog
-        ], 302);
+        ], 200);
     }
-
 
 }

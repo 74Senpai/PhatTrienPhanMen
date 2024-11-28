@@ -367,3 +367,39 @@ option {
     margin: 0.25rem 0rem 0.25rem 0.25rem;
     width: 0.85rem;
 }
+
+#blog-describe{
+    margin-top: 1.5rem;
+    background-color: rgb(237, 237, 237);
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.5rem;
+    resize: none;
+    font-size: 1rem;
+    outline: none;
+    border: 0px;
+}
+
+input[type="file"] {
+    display: none;
+    width: 30%;
+    height: 2rem; 
+    border: 0 solid black !important;/* Hide the default file input */
+    outline: 0 !important;
+}
+#blog-thumbnail{
+    width: 30%;
+    height: 2rem;
+    background-color: rgb(237, 237, 237);
+    /* justify-self: center; */
+    justify-content: center;
+    text-align: center;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    border-radius: 2px;
+}
+#imageInput{
+    /* width: 30%; */
+    background-color:rgb(237, 237, 237);
+}

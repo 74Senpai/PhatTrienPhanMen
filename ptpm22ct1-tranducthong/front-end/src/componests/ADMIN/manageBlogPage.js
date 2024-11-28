@@ -83,7 +83,7 @@ function ManageBlogPage(){
                     </div> 
                 </form>
                 <div className='type-list'>
-                    {blogTypes.map((value)=>(
+                    {blogTypes && blogTypes.map((value)=>(
                         <div key={value.id_type} className='nav type-blog'>
                             {value.type_name} {`(${value.total_blog})`}
                         </div>

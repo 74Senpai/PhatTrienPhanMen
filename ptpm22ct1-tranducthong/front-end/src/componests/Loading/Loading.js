@@ -1,12 +1,12 @@
 import './CSS/Loading.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Messages({typeBox, message}){
     return(<>
         <div className={typeBox+"-box box-message"}>
             <div className="icon">
                 {typeBox == "error" && <i className="fa-solid fa-xmark"></i>}
-                {typeBox == "infor" && <i className="fa-solid fa-circle-info"></i>}
+                {typeBox == "infor" && <i className="fa-solid fa-info"></i>}
                 {typeBox == "done" && <i className="fa-solid fa-check"></i>}
                 {typeBox == "warring" && <i className="fa-solid fa-exclamation"></i>}
                 {typeBox == "unknow" && <i className="fa-solid fa-question"></i>}
@@ -20,6 +20,16 @@ function Messages({typeBox, message}){
 export default function Loading({type, mess, isShow}){
 
     const [show, setShow] = useState(isShow);
+    
+    // useEffect(() => {
+    //     if (timeOut > 0 && isShow) {
+    //         const timer = setTimeout(() => {
+    //             setShow(true);
+    //         }, timeOut);
+
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [timeOut, isShow]);
 
     if(show){
         return(<>
@@ -27,6 +37,6 @@ export default function Loading({type, mess, isShow}){
             <div className="loading-box"><Messages typeBox={type} message={mess} /></div>
         </>);
     }
-
+    
     return null;
 }

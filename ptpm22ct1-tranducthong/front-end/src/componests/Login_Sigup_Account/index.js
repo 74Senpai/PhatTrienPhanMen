@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { todoAction } from '../../controller/handles.js';
 import { Infor, AuthorRegister, Login, SignUp, DeleteAccount, Logout } from './Form.js';
 import { MessageContex } from '../../Context/MessageContex';
-
+import { UseInforContex } from '../../Context/PagesContext.js';
 
 function Method({data , setCurrent}){
  
@@ -32,10 +32,11 @@ export default function Account({isShowForm, data}) {
     const [current, setCurrent] = useState('');
     const [loading, setLoading] = useState(false);
     const {setShowPopup} = useContext(MessageContex);
+    const {userInfor, setUserInfor} = useContext(UseInforContex);
     const beforNav = "";
     console.log("Befor nav", beforNav);
     console.log("Pros",data);
-    if(data){
+    if(data.token){
         return(<>
             <div id='fiter-bg' onClick={()=>{isShowForm(false)}}></div>
             <div id='form-method'>
@@ -47,7 +48,7 @@ export default function Account({isShowForm, data}) {
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>        
-                        <Infor data={data} isShowForm={isShowForm} setCurrent={setCurrent} />
+                        <Infor data={data} isShowForm={isShowForm} setCurrent={setCurrent} setUserInfor={setUserInfor}/>
                     </div>
                  }
                 {current == "form-register-author" &&
@@ -73,7 +74,11 @@ export default function Account({isShowForm, data}) {
                 {current == "form-logout" &&
                     <div id='form-logout'>
                         <span className="arow"></span>
-                        <Logout setCurrent={setCurrent} isShowForm={isShowForm}/>
+                        <Logout 
+                            setCurrent={setCurrent} 
+                            isShowForm={isShowForm} 
+                            setUserInfor={setUserInfor} 
+                            userInfor={userInfor}/>
                     </div>
                 }
                 
@@ -98,8 +103,18 @@ export default function Account({isShowForm, data}) {
                     Hoàn tất các bước để đăng ký tài khoản và 
                     có những tại ngiệm tốt nhất
                 </div>
-                <Login isShowForm={isShowForm} tab={tab} load={setLoading}/>
-                <SignUp isShowForm={isShowForm} tab={tab} load={setLoading} setShowPopup={setShowPopup}/>
+                <Login 
+                    isShowForm={isShowForm} 
+                    tab={tab} 
+                    load={setLoading} 
+                    setUserInfor={setUserInfor}
+                    setShowPopup={setShowPopup}/>
+                <SignUp 
+                    isShowForm={isShowForm} 
+                    tab={tab} 
+                    load={setLoading} 
+                    setUserInfor={setUserInfor}
+                    setShowPopup={setShowPopup}/>
             </div>         
         </>);
 }

@@ -60,6 +60,10 @@ return new class extends Migration
             $table->integer('id_author')->index();
             $table->text('content_blog');
             $table->integer('view');
+            $table->text('blog_describe');
+            $table->text('thumbnail');
+            $table->date('updated_at');
+            $table->date('created_at');
             $table->integer('show_type')->references('id_write_type')->on('write_type')->onDelete('cascade');
             $table->foreign('id_author')->references('id_author')->on('authors')->onDelete('cascade');
         });
@@ -94,6 +98,12 @@ return new class extends Migration
             $table->integer('id_write_type')->primary()->autoIncrement();
             $table->string('show_type_name')->unique();
         });
+
+        // Schema::create('blogs_describe', function(Blueprint $table){
+        //     $table->integer('id_blog')->unique()->references('id_blog')->on('blogs')->onDelete('cascade');
+        //     $table->text('blog_describe');
+        //     $table->text('thumbnail');
+        // });
     }
 
     /**

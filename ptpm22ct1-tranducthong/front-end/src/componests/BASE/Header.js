@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import Home from "./Home.js";
 import Pages from "./pages.js";
 import Account from "../Login_Sigup_Account";
@@ -7,7 +7,8 @@ import Loading from "../Loading/Loading.js";
 import "../BASE/CSS/Header.css";
 import AdminPages from "../ADMIN/index.js";
 import { getName } from "../../controller/pageFunction.js";
-
+import ReadBlogPage from "../ReadPage/index.js";
+import { UseInforContex } from "../../Context/PagesContext.js";
 
 function useBaseHook(){
     const [content, setContent] = useState(<Home />);
@@ -43,14 +44,9 @@ function Header(){
     const [searchContent, setContentsSeach] = useState('');
     const [isShow, setShow] = useState(false);
     const [content, currentSite, changeSite] = useBaseHook();
+    const {userInfor} = useContext(UseInforContex);
 
     console.log("Header adadad");
-
-    const data = getName();
-    let tmp;
-    if(data)
-      tmp = data.name;
-    const userName = tmp;
 
     return(<>
         <header>
@@ -69,13 +65,14 @@ function Header(){
             placeholder='Search' 
             onChange={(e) => setContentsSeach(e.target.value)}
             value={searchContent}/>
-            <div id='Search'><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div id='Search'><i className="fa-solid fa-magnifying-glass"></i></div>
           </div>
-          <div className="account nav" onClick={()=>{setShow(true)}}>{ data && userName || "Login" }</div>
-            {isShow && <Account isShowForm={setShow} data={data}/>}
+          <div className="account nav" onClick={()=>{setShow(true)}}>{userInfor.user_name || "Login" }</div>
+            {isShow && <Account isShowForm={setShow} data={userInfor}/>}
         </header>
         <div id='contents'>
-            {content}
+            <ReadBlogPage />
+            {/* {content} */}
         </div>
     </>);
 }

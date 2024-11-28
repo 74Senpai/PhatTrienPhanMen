@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { token } from '../../controller/pageFunction';
 // import { todoAction } from '../../controller/handles.js';
+import { MessageContex } from '../../Context/MessageContex';
 
 
 function localSave(name, data){
@@ -16,16 +17,16 @@ function localSave(name, data){
     return true;
 }
 
-export function Infor({data, isShowForm, setCurrent}){
-    const [email, setEmail] = useState(data.email);
-    const [userName, setUserName] = useState(data.name);
+export function Infor({data, isShowForm, setCurrent, setUserInfor}){
+    const [email, setEmail] = useState(data.user_email);
+    const [userName, setUserName] = useState(data.user_name);
     const [errorMessages, setErrorMessages] = useState('');
     const [isChangeData, setChangeData] = useState(false);
     const [editMode, setEditMode] = useState(false);
     // e.preventDefault();
     useEffect(()=>{
         console.log('data in effect', data);
-        if(data.name !== userName || data.email !== email){
+        if(data.user_name !== userName || data.user_email !== email){
             setChangeData(true);
         }else{
             setChangeData(false);
@@ -56,13 +57,16 @@ export function Infor({data, isShowForm, setCurrent}){
                 setCurrent(""); // Đặt lại trạng thái đăng nhập trong ứng dụng
                 console.log("Update out successfully");
                 isShowForm(false);
+                setUserInfor({
+                    user_name : userName,
+                    user_email : email
+                });
                 localSave('user_data', data.data);
                 console.log('update user',data);
             } else {
                 const data = await response.json();
                 setErrorMessages(data.message || "Update Fail");
             }
-
         }catch(error){
             setErrorMessages(error.message);
             console.error('Error signing up:', error.message);
@@ -73,8 +77,8 @@ export function Infor({data, isShowForm, setCurrent}){
     const editModeAction = (isOn)=>{
         setEditMode(isOn);
         if(!isOn){
-            setEmail(data.email);
-            setUserName(data.name);
+            setEmail(data.user_email);
+            setUserName(data.user_name);
         }    
     }
 
@@ -198,7 +202,7 @@ export function AuthorRegister({isShowForm, setCurrent}){
 }
 
 
-export function SignUp({isShowForm, tab, setShowPopup}) {
+export function SignUp({isShowForm, tab, setShowPopup, setUserInfor}) {
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -238,13 +242,35 @@ export function SignUp({isShowForm, tab, setShowPopup}) {
             }
 
             // Xử lý response nếu đăng ký thành công
+            const user_data = data.data;
+            setUserInfor({
+                token : data.token,
+                user_id : user_data.user_id,
+                user_name : user_data.name,
+                user_email : user_data.email
+            });
+
             console.log('Sign Up successful:', data);
             console.info(`Token: ${data.token}`);
             let saveData = localSave( "access_token", data.token);
-            localSave( "user_data", data.data);   
+            localSave( "user_data", data.data); 
+            setShowPopup(prev => ({
+                ...prev,
+                message: "Success !!!",
+                type: "done",
+                isShow: true,
+                timeOut:2000
+            }));  
             // changeLoginState(saveData);
             isShowForm(!saveData);
         } catch (error) {
+            setShowPopup(prev => ({
+                ...prev,
+                message: "Error !!!",
+                type: "error",
+                isShow: true,
+                timeOut:2000
+            }));
             // Xử lý lỗi nếu có
             setErrorMessages(error.message);
             console.error('Error signing up:', error.message);
@@ -303,7 +329,7 @@ export function SignUp({isShowForm, tab, setShowPopup}) {
 }
 
 
-export function Login({isShowForm, tab}){
+export function Login({isShowForm, tab, setShowPopup, setUserInfor}){
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -313,6 +339,13 @@ export function Login({isShowForm, tab}){
     
     const handleLogin = async (e) => {
         e.preventDefault(); 
+        
+        setShowPopup(prev => ({
+            ...prev,
+            message: "Login ...",
+            type: "infor",
+            isShow: true,
+        }));
         
         try {
             const response = await fetch('http://127.0.0.1:8000/api/login', {
@@ -329,26 +362,52 @@ export function Login({isShowForm, tab}){
             const data = await response.json();
 
             if (!response.ok) {
-                // Xử lý lỗi nếu response không thành công
+                setShowPopup(prev => ({
+                    ...prev,
+                    message: "Đăng nhập thất bại !!!",
+                    type: "error",
+                    isShow: true,
+                    timeOut:1000
+                }));
                 throw new Error(data.message || 'Đăng nhập thất bại');
             }else{
+                setShowPopup(prev => ({
+                    ...prev,
+                    message: "Đăng nhập thành công !!!",
+                    type: "done",
+                    isShow: true,
+                    timeOut:1000
+                }));
                 setErrorMessages('');
-            }
+            
 
             // Xử lý response nếu đăng ký thành công
-            console.log('Login successful:', data);
-            // console.log('Login successful:', data);
-            console.info(`Token: ${data.token}`);
-            let saveData = localSave( "access_token", data.token);
-            localSave( "user_data", data.data);   
-            // changeLoginState(saveData);  
-            isShowForm(!saveData);
-            
+                const user_data = data.data;
+                setUserInfor({
+                    token : data.token,
+                    user_id : user_data.user_id,
+                    user_name : user_data.name,
+                    user_email : user_data.email
+                });
+                console.log('Login successful:', data);
+                console.info(`Token: ${data.token}`);
+                let saveData = localSave( "access_token", data.token);
+                localSave( "user_data", data.data);   
+                // changeLoginState(saveData); 
+                isShowForm(!saveData);
+            }
         } catch (error) {
-            // Xử lý lỗi nếu có
+            setShowPopup(prev => ({
+                ...prev,
+                message: "Error !!!",
+                type: "error",
+                isShow: true,
+                timeOut:1000
+            }));
             setErrorMessages(error.message);
             console.error('Error signing up:', error.message);
         }
+        
     };
 
     if(tab != "Login"){
@@ -474,13 +533,21 @@ export function DeleteAccount({isShowForm, setCurrent}){
     </>);
 }
 
-export function Logout({isShowForm, setCurrent }) {
+export function Logout({isShowForm, userInfor, setCurrent, setUserInfor }) {
     const [errorMessages, setErrorMessages] = useState('');
+    const {setShowPopup} = useContext(MessageContex);
 
     const handleDelete = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('access_token');
+        const token = userInfor.token;
         console.log('Token get', token);
+
+        setShowPopup(pre =>({
+            ...pre,
+            message : "Logout ... ",
+            isShow : true,
+            type : "infor",
+        }));
         try {
             const response = await fetch('http://127.0.0.1:8000/api/logout', {
                 method: 'POST',
@@ -497,11 +564,32 @@ export function Logout({isShowForm, setCurrent }) {
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('user_data');
                 setCurrent(""); // Đặt lại trạng thái đăng nhập trong ứng dụng
+                setUserInfor({
+                    token : ``,
+                    user_id : '',
+                    user_name : '',
+                    user_email : '',
+                    id_role : ''
+                });
                 console.log("Logged out successfully");
                 isShowForm(false);
+                setShowPopup(pre =>({
+                    ...pre,
+                    message : "Logout successfully !!! ",
+                    isShow : true,
+                    timeOut : 1500,
+                    type : "done",
+                }));
             } else {
                 const data = await response.json();
                 setErrorMessages(data.message || "Logout failed");
+                setShowPopup(pre =>({
+                    ...pre,
+                    message : data.message,
+                    isShow : true,
+                    timeOut : 2000,
+                    type : "error",
+                }));
             }
         } catch (error) {
             setErrorMessages(error.message);

@@ -18,7 +18,7 @@ function NavColums({children}){
     </>);
 }
 
-function Blog(){
+function Blog({blog_title, blog_types, day_create, blog_view, comments}){
     return(<>
         <div className='box-blog'>
             <div className='blog-title'>Hihihi</div>
@@ -26,7 +26,6 @@ function Blog(){
             <div className='date-upblog'>20/08/2024</div>
             <div className='blog-view'>VIEW: 100.000</div>
             <div className='blog-comment'>COMMENTS: 3</div>
-            <div className='blog-like'>LIKE: 10</div>
         </div>
     </>);
 }
