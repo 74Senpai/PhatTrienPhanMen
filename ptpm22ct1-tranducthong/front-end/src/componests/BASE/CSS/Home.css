@@ -75,12 +75,12 @@
     flex-flow: column;
     /* flex-grow: 1; */
     /* align-content: center; */
-    flex-grow: 0;
+    flex-grow: 1;
     padding-left: 0.75rem;
 }
 
 .box-content > div{
-    flex-grow: 0;
+    flex-grow: 1;
     
 }
 
@@ -117,6 +117,7 @@
     overflow-wrap: break-word; /* Hoặc word-wrap: break-word */
     word-break: break-word;
     overflow-y: hidden;
+    /* min-width: 10rem; */
 }
 
 .date-update{
@@ -174,6 +175,7 @@
 
 .templ1 .blog .image-blog img{
     width: 13.5rem;
+    max-height: 8rem;
     border-radius: 8px;
 }
 

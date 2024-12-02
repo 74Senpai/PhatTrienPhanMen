@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use Illuminate\Support\Facades\DB;
+
 use App\Models\User;
 use App\Models\Author;
+use App\Models\Role;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     public function DeleteUser(Request $request){
@@ -80,6 +84,59 @@ class UserController extends Controller
             ]);
         }catch(Exception $e){
             return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function findUserById( Request $request, int $user_id){
+        try{
+            $result = User::where('user_id', $user_id)->first();
+            if($result == null){
+                return response()->json([
+                    'success' => 'Get user bay id successfully',
+                    'message' => 'User not found'
+                ], 200);
+            }
+
+            return response()->json([
+                'success'   => 'Get user by id successfully',
+                'data'      => $result
+            ],200);
+
+        }catch(Exception $e){
+            return response()->json([
+                'error'     => 'Can not get user by id',
+                'message'   => $e->getMessage()
+            ],500);
+        }
+    }
+
+    public function getUserInfor( Request $request ){
+        $user = $request->user();
+        if($user == null){
+            return response()->json([
+                'error' => 'Unauthorized token'
+            ], 401);
+        }
+
+        return response()->json([
+            'success'   => 'Get user infor success',
+            'data'      => $user
+        ],200);
+    }
+    
+    public function getRole( Request $request){
+        $user = $request->user();
+        try{
+            $role = Role::where('id_role', $user->id_role)->first();
+            return response()->json([
+                'success'   =>'Get role successfully !!!',
+                'data'      => $role
+            ],200);
+        }catch(Exception $e){
+            return response()->json([
+                'error' => 'Can not fetch user role',
+                'message' => $e->getMessage()
+            ],500);
         }
     }
 }

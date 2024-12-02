@@ -17,7 +17,7 @@ function Messages({typeBox, message}){
 }
 
 
-export default function Loading({type, mess, isShow}){
+export default function Loading({type, mess, isShow, filter}){
 
     const [show, setShow] = useState(isShow);
     
@@ -33,7 +33,7 @@ export default function Loading({type, mess, isShow}){
 
     if(show){
         return(<>
-            <div className="shield"></div>
+            {filter && <div className="shield"></div>}
             <div className="loading-box"><Messages typeBox={type} message={mess} /></div>
         </>);
     }

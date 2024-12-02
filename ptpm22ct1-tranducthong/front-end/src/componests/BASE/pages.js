@@ -1,37 +1,40 @@
 import { ContentsByType } from "./Home.js";
 // import { useContext } from "react";
 // import { RefContext } from "../Context/PagesContext.js";
-import { RefCreate } from "./Ref.js";
-import { RefBlocks } from "./Ref.js";
+import { PagesRefContex, PagesSiteContex } from "../../Context/PagesContext.js";
+import { useContext } from "react";
+
 
 
 export default function Pages(){
     // const reflink = useContext(RefContext);
-    const {refBlock, refNext} = RefCreate();
-    refNext({name : "IT"});
-    console.log(refBlock);
-    const refList = [];
-    for(let i in refBlock){
-        refList.push(<RefBlocks name={refBlock[i]} extend={">"} key={i}/>);
-    }
+    const {pagesRef, setref} = useContext(PagesRefContex);
+    const {currentSite, changeSite} = useContext(PagesSiteContex);
+    // console.log("currentSite", currentSite);
     return(<>
         <div className="ref-link">
-            {refList}
+            {pagesRef &&
+                pagesRef.map((value, index) => (
+                    <div className="nav ref-name"
+                        onClick={()=>changeSite(value)}
+                        key={value}>
+                            {value}
+                            {index < pagesRef.length - 1 &&
+                                <span className="ref-name">
+                                    {'>'}
+                                </span>
+                            }
+                    </div>
+                ))
+            }
         </div>
         <div className="contents-pages-ref">
             <ContentsByType 
-                title_name={"Chuyen IT"}
-                templ={1}
+                title_name={currentSite}
+                templ={Math.floor(Math.random() * (3 - 1)) + 1}
+                type_API={currentSite}
             />
         </div>
     </>);
 }
 
-export function BlogPagesContent(){
-    return(
-        <div className="blog-content-page">
-            <div className="nav-left"></div>
-            <div className="content-right"></div>
-        </div>
-    );
-}

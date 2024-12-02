@@ -11,7 +11,7 @@ export function getName(){
     return user_data; 
 }
 
-export const token = localStorage.getItem('access_token');
+export const getToken = () => localStorage.getItem('access_token');
 
 export async function getAllBlogType(){
     //http://127.0.0.1:8000/api/public/blog-type/show/all

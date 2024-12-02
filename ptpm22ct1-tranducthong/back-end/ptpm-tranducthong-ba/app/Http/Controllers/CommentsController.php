@@ -67,7 +67,13 @@ class CommentsController extends Controller
 
     public function getBlogAllComments(Request $request, int $id_blog){
         try{
-            $results = Comment::where('id_blog', $id_blog)->get();
+            $results = DB::select(
+             "SELECT users.name, users.email, comments.id_comment, comments.content_comment,
+                            comments.day_comment, id_parent_comment
+                    FROM comments
+                        INNER JOIN users ON users.user_id = comments.user_id   
+                    WHERE comments.id_blog = ? 
+            ", [$id_blog]);
             if(!$results){
                 return response()->json([
                     'success' => 'Get blog all comment successfull',
@@ -94,7 +100,6 @@ class CommentsController extends Controller
         $validate = Validator::make($request->all(), [
             'id_blog'           => 'required|int',
             'content_comment'   => 'required|string',
-            'id_parent_comment' => 'int'
         ]);
 
         if($validate->fails()){

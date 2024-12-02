@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react';
-import { token } from '../../controller/pageFunction';
 // import { todoAction } from '../../controller/handles.js';
 import { MessageContex } from '../../Context/MessageContex';
 
@@ -124,10 +123,11 @@ export function Infor({data, isShowForm, setCurrent, setUserInfor}){
     </>);
 }
 
-export function AuthorRegister({isShowForm, setCurrent}){
+export function AuthorRegister({isShowForm, setCurrent, userInfor}){
     const [phoneNumber, setPhoneNumber] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [errorMessages, setErrorMessages] = useState('');
+    
 
     const handleSignUpAuthor = async(e)=>{
         e.preventDefault();
@@ -136,7 +136,7 @@ export function AuthorRegister({isShowForm, setCurrent}){
             const response = await fetch('http://127.0.0.1:8000/api/author/register', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${userInfor.token}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
@@ -247,7 +247,8 @@ export function SignUp({isShowForm, tab, setShowPopup, setUserInfor}) {
                 token : data.token,
                 user_id : user_data.user_id,
                 user_name : user_data.name,
-                user_email : user_data.email
+                user_email : user_data.email,
+                id_role : user_data.id_role
             });
 
             console.log('Sign Up successful:', data);
@@ -387,7 +388,8 @@ export function Login({isShowForm, tab, setShowPopup, setUserInfor}){
                     token : data.token,
                     user_id : user_data.user_id,
                     user_name : user_data.name,
-                    user_email : user_data.email
+                    user_email : user_data.email,
+                    id_role : user_data.id_role
                 });
                 console.log('Login successful:', data);
                 console.info(`Token: ${data.token}`);

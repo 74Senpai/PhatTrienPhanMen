@@ -62,8 +62,8 @@ return new class extends Migration
             $table->integer('view');
             $table->text('blog_describe');
             $table->text('thumbnail');
-            $table->date('updated_at');
-            $table->date('created_at');
+            $table->dateTime('updated_at');
+            $table->dateTime('created_at');
             $table->integer('show_type')->references('id_write_type')->on('write_type')->onDelete('cascade');
             $table->foreign('id_author')->references('id_author')->on('authors')->onDelete('cascade');
         });
@@ -73,7 +73,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->integer('id_blog');
             $table->text('content_comment');
-            $table->date('day_comment');
+            $table->dateTime('day_comment');
             $table->string('id_parent_comment')->nullable();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('id_blog')->references('id_blog')->on('blogs')->onDelete('cascade');

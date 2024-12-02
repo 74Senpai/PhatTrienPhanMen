@@ -5,7 +5,7 @@ import { Infor, AuthorRegister, Login, SignUp, DeleteAccount, Logout } from './F
 import { MessageContex } from '../../Context/MessageContex';
 import { UseInforContex } from '../../Context/PagesContext.js';
 
-function Method({data , setCurrent}){
+function Method({data , setCurrent, userRole}){
  
     return(<>
         <div className='account-method'>
@@ -13,9 +13,9 @@ function Method({data , setCurrent}){
             <div className='box-method' onClick={()=>setCurrent('form-edit')}>
                 Information
             </div>
-            <div className='box-method' onClick={()=>setCurrent('form-register-author')}>
+            {userRole == 'USER' && <div className='box-method' onClick={()=>setCurrent('form-register-author')}>
                 Author Register
-            </div>
+            </div>}
             <div className='box-method' onClick={()=>setCurrent('form-delete')}>
                 Delete account
             </div>
@@ -26,7 +26,7 @@ function Method({data , setCurrent}){
     </>);
 }
 
-export default function Account({isShowForm, data}) {
+export default function Account({isShowForm, data, userRole}) {
     // const [loginPage, setLoginPage] = useState(<Login />);
     const [tab, setTab] = useState("Login");
     const [current, setCurrent] = useState('');
@@ -40,7 +40,7 @@ export default function Account({isShowForm, data}) {
         return(<>
             <div id='fiter-bg' onClick={()=>{isShowForm(false)}}></div>
             <div id='form-method'>
-                 <Method data={data} setCurrent={setCurrent} />
+                 <Method data={data} setCurrent={setCurrent} userRole={userRole}/>
                  {current == "form-edit" && 
                     <div id='form-edit'>
                         <span className="arow"></span>
@@ -51,16 +51,18 @@ export default function Account({isShowForm, data}) {
                         <Infor data={data} isShowForm={isShowForm} setCurrent={setCurrent} setUserInfor={setUserInfor}/>
                     </div>
                  }
-                {current == "form-register-author" &&
+                {userRole == 'USER' && <>
+                    {current == "form-register-author" &&
                     <div id='form-register-author' >
                         <span className="arow"></span>
                         <div className='cancle-btn' onClick={()=>{setCurrent("")}}>
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>        
-                        <AuthorRegister isShowForm={isShowForm}  setCurrent={setCurrent}/>
+                        <AuthorRegister isShowForm={isShowForm}  setCurrent={setCurrent} userInfor={userInfor}/>
                     </div>
-                }
+                    }
+                </>}
                 {current == "form-delete" && 
                     <div id='form-delete'>
                         <span className="arow"></span>
@@ -92,7 +94,7 @@ export default function Account({isShowForm, data}) {
         <div id='fiter-bg' onClick={()=>{isShowForm(false);}}></div>
             <div id='form-signUp'>
                 <div className='cancle-btn' onClick={()=>{isShowForm(false);}}>
-                    <i class="fa-solid fa-xmark"></i>
+                    <i className="fa-solid fa-xmark"></i>
                 </div>
                 <div className='logo-blog'><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>
                 <div className='nav-Login'>

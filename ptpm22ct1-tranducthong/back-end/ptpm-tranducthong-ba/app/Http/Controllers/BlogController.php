@@ -393,4 +393,49 @@ class BlogController extends Controller
         ], 200);
     }
 
+    public function getBlogByType(Request $request, string $type_name){
+        try{
+            $blogs = DB::select(
+                "SELECT * FROM type_blog 
+                            INNER JOIN list_blog_by_type as list_blog on list_blog.id_type = type_blog.id_type 
+                            INNER JOIN blogs on blogs.id_blog = list_blog.id_blog 
+                        WHERE type_blog.type_name = ?
+                ", [$type_name]);
+            foreach($blogs as $blog){
+                $blog->thumbnail = url('storage/' . $blog->thumbnail);
+            }
+            return response()->json([
+                'success'   => 'Get blog by type '.$type_name.' successfully !!!',
+                'data'      => $blogs
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error'     => 'Can not get blog ',
+                'message'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getBlogByViews(Request $request){
+        try{
+            $blogs = DB::select(
+                "SELECT * FROM type_blog 
+                            INNER JOIN list_blog_by_type as list_blog on list_blog.id_type = type_blog.id_type 
+                            INNER JOIN blogs on blogs.id_blog = list_blog.id_blog 
+                        ORDER BY view DESC
+                       ");
+            foreach($blogs as $blog){
+                $blog->thumbnail = url('storage/' . $blog->thumbnail);
+            }
+            return response()->json([
+                'success'   => 'Get blog oder by view successfully',
+                'data'      => $blogs
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error' => 'Can not get blog ',
+                'message' => $e->getMessage()
+            ],500);
+        }
+    }
 }

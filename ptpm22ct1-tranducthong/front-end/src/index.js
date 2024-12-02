@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom/client';
 import App from './componests/App.js';
 import reportWebVitals from './default/reportWebVitals.js';
 import { MessageProvider } from './Context/MessageContex.js';
-import { BlogTypesProvider, UseInforProvider } from './Context/PagesContext.js';
+import { BlogTypesProvider, UseInforProvider, PagesRefProvider, PagesSiteProvider } from './Context/PagesContext.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // require('dotenv').config();
 root.render(
   <React.StrictMode>
+    <PagesSiteProvider>
+    <PagesRefProvider>
     <UseInforProvider>
     <MessageProvider>
         <BlogTypesProvider>
@@ -16,6 +18,8 @@ root.render(
         </BlogTypesProvider>
       </MessageProvider>
     </UseInforProvider>
+    </PagesRefProvider>
+    </PagesSiteProvider>
   </React.StrictMode>
 );
 

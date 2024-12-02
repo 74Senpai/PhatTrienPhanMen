@@ -10,7 +10,8 @@ export function MessageProvider({children}){
         isShow : false,
         timeOut : 0,
         type : "",
-        action : 'none',  
+        action : 'none',
+        filter : false  
     });
 
     // const popupValue = showPopup;
@@ -35,7 +36,8 @@ export function MessageProvider({children}){
                 <Loading 
                     type={showPopup.type} 
                     mess={showPopup.message} 
-                    isShow={true} 
+                    isShow={true}
+                    filter={showPopup.filter} 
                 />}
         </MessageContex.Provider>
     )

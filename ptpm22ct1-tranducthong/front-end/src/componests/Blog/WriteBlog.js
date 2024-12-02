@@ -6,8 +6,7 @@ import 'highlight.js/styles/github.css';
 import { Editor, EditorState,  RichUtils, convertToRaw} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import WriteConfigBtn from './TextEditor';
-import { BlogTypesContext } from '../../Context/PagesContext';
-import { token } from '../../controller/pageFunction';
+import { BlogTypesContext, UseInforContex } from '../../Context/PagesContext';
 import { stateToHTML } from 'draft-js-export-html';
 import { MessageContex } from '../../Context/MessageContex';
 
@@ -25,7 +24,7 @@ export default function WriteBlog(){
     });
    
     const {blogTypes} = useContext(BlogTypesContext);
-
+    const {userInfor} = useContext(UseInforContex);
 
     const [markdown, setMarkDown] = useState('');
     const [code, setCode] = useState('');
@@ -162,7 +161,7 @@ export default function WriteBlog(){
             const response = await fetch("http://127.0.0.1:8000/api/author/blog/create-new", {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${userInfor.token}`,
                 },
                 body: formData,
             });
@@ -186,7 +185,6 @@ export default function WriteBlog(){
                 ...prev,
                 message: "Failed to create blog: " + error.message,
                 isShow: true,
-                type: "err",
             }));
         }
     };

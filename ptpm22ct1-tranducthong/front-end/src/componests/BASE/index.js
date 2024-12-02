@@ -1,12 +1,13 @@
 import Header from "./Header.js";
 import Footer from "./Footer.js";
 import { useEffect, useContext } from "react";
-import { BlogTypesContext } from "../../Context/PagesContext.js";
+import { BlogTypesContext, PagesSiteContex } from "../../Context/PagesContext.js";
+import ReadBlogPage from "../ReadPage/index.js";
 
 export function Base(){
 
     const {setBlogTypes} = useContext(BlogTypesContext);
-
+    const {content} = useContext(PagesSiteContex);
     useEffect(() => {
         
             const fetchTypes = async () => {
@@ -31,6 +32,10 @@ export function Base(){
 
     return (<>
         <Header />
+        <div id='contents'>
+            {/* <ReadBlogPage /> */}
+            {content}
+        </div>
         <Footer />
     </>);
 }

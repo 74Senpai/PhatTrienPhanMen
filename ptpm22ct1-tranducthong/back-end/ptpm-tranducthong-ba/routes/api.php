@@ -45,6 +45,9 @@ Route::prefix('public')->group(function(){
     Route::get('blog/all', [BlogController::class, 'showAllBlogs']);
     Route::get('blog/id={id}', [BlogController::class, 'showBlogById']);
     Route::get('comment/blog/id={id}', [CommentsController::class, 'getBlogAllComments']);
+    Route::get('find/user/id={id}', [UserController::class, 'findUserById']);
+    Route::get('blog/show/type={type}', [BlogController::class, 'getBlogByType']);
+    Route::get('blog/show/orderby/view', [BlogController::class, 'getBlogByViews']);
 });
 
 Route::prefix('author')
@@ -59,6 +62,8 @@ Route::prefix('author')
 Route::prefix('user')
     ->middleware(['auth:sanctum'])
     ->group(function(){
+        Route::get('information', [UserController::class, 'getUserInfor']);
         Route::post('comment/create-new', [CommentsController::class, 'createNewComment']);
         Route::get('comment/user/id={id}', [CommentsController::class, 'getUserAllComments']);
+        Route::get('role', [UserController::class, 'getRole']);
 });

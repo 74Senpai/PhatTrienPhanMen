@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, memo } from 'react';
-import { token, getAllBlogType } from '../../controller/pageFunction';
+// import { token, getAllBlogType } from '../../controller/pageFunction';
 import { MessageContex } from '../../Context/MessageContex';
-import { BlogTypesContext } from '../../Context/PagesContext';
+import { BlogTypesContext, UseInforContex } from '../../Context/PagesContext';
 
 function ManageBlogPage(){
 
@@ -10,6 +10,7 @@ function ManageBlogPage(){
     const [describe, setDescribe] = useState('');
 
     const {blogTypes, setBlogTypes} = useContext(BlogTypesContext);
+    const {userInfor} = useContext(UseInforContex);
     console.log("Blog type ...", blogTypes);
 
     const handleCreateType = async(e)=>{
@@ -25,7 +26,7 @@ function ManageBlogPage(){
             const response = await fetch('http://127.0.0.1:8000/api/admin/blog-type/create', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${userInfor.token}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },

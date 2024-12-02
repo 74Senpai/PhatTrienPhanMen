@@ -21,7 +21,7 @@ class User extends Authenticatable
     public $incrementing = true;
     protected $keyType = 'int';
     protected $fillable = [
-        'name', 'email', 'password', 'remember_token',
+        'name', 'email', 'password', 'remember_token', 'id_role'
     ];    
 
     /**
@@ -32,7 +32,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'id_role',
         'email_verified_at'
     ];
 

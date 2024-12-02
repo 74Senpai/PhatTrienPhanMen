@@ -1,79 +1,97 @@
-import { memo, useContext, useEffect, useState } from "react";
-import Home from "./Home.js";
-import Pages from "./pages.js";
+import React, { memo, useContext, useEffect, useState } from "react";
 import Account from "../Login_Sigup_Account";
-import BlogManage from "../Blog/index.js";
-import Loading from "../Loading/Loading.js";
 import "../BASE/CSS/Header.css";
-import AdminPages from "../ADMIN/index.js";
-import { getName } from "../../controller/pageFunction.js";
-import ReadBlogPage from "../ReadPage/index.js";
-import { UseInforContex } from "../../Context/PagesContext.js";
+import { UseInforContex, 
+        BlogTypesContext, 
+        PagesRefContex, 
+        PagesSiteContex } from "../../Context/PagesContext.js";
 
-function useBaseHook(){
-    const [content, setContent] = useState(<Home />);
-    const [currentSite, setCurrentSite] = useState("home");
 
-    const changeSite = (site)=>{
-        setCurrentSite(site);
-        switch(site){
-            case "home":
-                setContent(<Home />);
-                break;
-            case "blog":
-                setContent(<BlogManage />);
-                break;
-            case "c++":
-                setContent(<Pages />);
-                break;
-            case "c#":
-                setContent(<Pages />);
-                break;
-            case "admin":
-                setContent(<AdminPages />);
-                break;
-            default:
-                setContent("Loading faild");
-        }
-    }
-    return [content, currentSite, changeSite];
-} 
-
-function Header(){
+function Header() {
 
     const [searchContent, setContentsSeach] = useState('');
     const [isShow, setShow] = useState(false);
-    const [content, currentSite, changeSite] = useBaseHook();
-    const {userInfor} = useContext(UseInforContex);
+    const { userInfor } = useContext(UseInforContex);
+    const [userRole, setUserRole] = useState('guest');
+    const {blogTypes} = useContext(BlogTypesContext);
+    const {setRef} = useContext(PagesRefContex);
+    const {content, currentSite, changeSite} = useContext(PagesSiteContex);
 
-    console.log("Header adadad");
+    useEffect(function () {
+        const userRole = async () => {
+            if (userInfor.token) {
+                try {
+                    const response = await fetch('http://127.0.0.1:8000/api/user/role', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${userInfor.token}`,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+                    const role = data.data;
+                    setUserRole(role.name_role);
 
-    return(<>
+                } catch (error) {
+                    console.log('Can not get user information');
+                }
+            }else{
+                setUserRole('guest');
+            }
+        }
+        userRole();
+
+    }, [userInfor.token]);
+
+
+    return (<>
         <header>
-            <div className={"nav "+`${currentSite === "home" ? "active":""}`} onClick={()=>changeSite("home")}><img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png"/></div>
-            <div className={"nav "+`${currentSite === "admin" ? "active":""}`} onClick={()=>changeSite("admin")}>ADMIN</div>
-            <div className={"nav "+`${currentSite === "blog" ? "active":""}`} onClick={()=>changeSite("blog")}>BLOG</div>
-            <div className={"nav "+`${currentSite === "javascript" ? "active":""}`} onClick={()=>changeSite("javascript")}>JAVASCRIPT</div>
-            <div className={"nav "+`${currentSite === "c++" ? "active":""}`} onClick={()=>changeSite("c++")}>C++</div>
-            <div className={"nav "+`${currentSite === "c#" ? "active":""}`} onClick={()=>changeSite("c#")}>C#</div>
-            <div className={"nav "+`${currentSite === "java" ? "active":""}`} onClick={()=>changeSite("java")}>JAVA</div>
-            <div className={"nav "+`${currentSite === "other" ? "active":""}`} onClick={()=>changeSite("other")}>OTHER</div>
-          <div className='search'>
-            <input 
-            type='search' 
-            name='search'
-            placeholder='Search' 
-            onChange={(e) => setContentsSeach(e.target.value)}
-            value={searchContent}/>
-            <div id='Search'><i className="fa-solid fa-magnifying-glass"></i></div>
-          </div>
-          <div className="account nav" onClick={()=>{setShow(true)}}>{userInfor.user_name || "Login" }</div>
-            {isShow && <Account isShowForm={setShow} data={userInfor}/>}
+            <div className={"nav " + `${currentSite === "home" ? "active" : ""}`} onClick={() => changeSite("home")}>
+                <img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png" />
+            </div>
+            {userRole == 'ADMIN' &&<>
+                <div className={"nav " + `${currentSite === "admin" ? "active" : ""}`} onClick={() => changeSite("admin")}>ADMIN</div>
+                <div className={"nav " + `${currentSite === "blog" ? "active" : ""}`} onClick={() => changeSite("blog")}>BLOG</div>
+            </>}
+            {userRole == 'AUTHOR' &&
+                <div className={"nav " + `${currentSite === "blog" ? "active" : ""}`} onClick={() => changeSite("blog")}>BLOG</div>
+            }
+            {blogTypes &&
+               blogTypes.map((value, index)=>(<React.Fragment key={index}>
+                    {index < 5 && 
+                        <div key={value.id_type} 
+                            className={"nav " + `${currentSite === value.type_name ? "active" : ""}`} 
+                            onClick={() => {changeSite(value.type_name); setRef(value.type_name, 'HOME')}}>
+                            {value.type_name}
+                        </div>
+                    }
+                </React.Fragment>))
+            }
+            {blogTypes.length >= 5 &&
+                <div className="nav">
+                    ALL
+                </div>
+            }
+            {/* <div className={"nav " + `${currentSite === "javascript" ? "active" : ""}`} onClick={() => changeSite("javascript")}>JAVASCRIPT</div>
+            <div className={"nav " + `${currentSite === "c++" ? "active" : ""}`} onClick={() => changeSite("c++")}>C++</div>
+            <div className={"nav " + `${currentSite === "c#" ? "active" : ""}`} onClick={() => changeSite("c#")}>C#</div>
+            <div className={"nav " + `${currentSite === "java" ? "active" : ""}`} onClick={() => changeSite("java")}>JAVA</div>
+            <div className={"nav " + `${currentSite === "other" ? "active" : ""}`} onClick={() => changeSite("other")}>OTHER</div> */}
+            <div className='search'>
+                <input
+                    type='search'
+                    name='search'
+                    placeholder='Search'
+                    onChange={(e) => setContentsSeach(e.target.value)}
+                    value={searchContent} />
+                <div id='Search'><i className="fa-solid fa-magnifying-glass"></i></div>
+            </div>
+            <div className="account nav" onClick={() => { setShow(true) }}>
+                {userInfor.user_name || 'Login'}
+            </div>
+            {isShow && <Account isShowForm={setShow} data={userInfor} userRole={userRole}/>}
         </header>
-        <div id='contents'>
-            <ReadBlogPage />
-            {/* {content} */}
-        </div>
     </>);
 }
 
