@@ -2,6 +2,7 @@ import './CSS/BlogManage.css';
 import { useEffect, useState, useContext } from 'react';
 import WriteBlog from './WriteBlog';
 import { MessageContex } from '../../Context/MessageContex';
+import { UseInforContex, AuthorContex } from '../../Context/PagesContext';
 
 function Nav({children, ...navProps}){
 
@@ -19,13 +20,18 @@ function NavColums({children}){
 }
 
 function Blog({blog_title, blog_types, day_create, blog_view, comments}){
+    const {setHighestView} = useContext(AuthorContex);
+
+    setHighestView(pre => pre < blog_view ? blog_view : pre);
     return(<>
         <div className='box-blog'>
-            <div className='blog-title'>Hihihi</div>
-            <div className='blog-type'>TYPE: JAVA, JAVA CO BAN</div>
-            <div className='date-upblog'>20/08/2024</div>
-            <div className='blog-view'>VIEW: 100.000</div>
-            <div className='blog-comment'>COMMENTS: 3</div>
+            <div className='blog-title'>{blog_title}</div>
+            <div className='blog-type'>
+                {blog_types.map((type, index) => (<span key={index}>{type} </span> ))}
+            </div>
+            <div className='date-upblog'>{day_create}</div>
+            <div className='blog-view'>VIEW:{blog_view}</div>
+            <div className='blog-comment'>COMMENTS: {comments}</div>
         </div>
     </>);
 }
@@ -49,18 +55,88 @@ function ToolBar(){
 }
 
 function BlogsCount(){
+
+    const {userInfor} = useContext(UseInforContex);
+    const {setShowPopup} = useContext(MessageContex);
+    const {myBlogs, setMyBolgs, setHighestView} = useContext(AuthorContex);
+
+    useEffect(()=>{
+        const fetchBlogByAuthor = async()=>{
+            setShowPopup( pre=>({
+                message : "Get author blogs",
+                isShow : true,
+                type : "infor",
+                action : 'none',
+                filter : false
+            }));
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/author/blog/all`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${userInfor.token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json(); // Parse JSON from the response
+                    const dataBlog = data.data;
+                    // console.log('Data blog id 1:', dataBlog);
+                    setMyBolgs(dataBlog);
+                    setShowPopup(pre => ({
+                        message : "Done",
+                        isShow : true,
+                        timeOut : 1500,
+                        type : "done",
+                        action : 'none',
+                        filter : false
+                    }));
+                } else {
+                    console.error('Failed to fetch:', response.status, response.statusText);
+                    setShowPopup( pre=>({
+                        message : "Failed to fetch",
+                        isShow : true,
+                        timeOut : 1500,
+                        type : "error",
+                        action : 'none',
+                        filter : true
+                    }));
+                }
+            } catch (error) {
+                setShowPopup( pre=> ({
+                    message : "Failed to fetch",
+                    isShow : true,
+                    timeOut : 1500,
+                    type : "error",
+                    action : 'none',
+                    filter : true
+                }));
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        fetchBlogByAuthor();
+    }, []);
+
     return(<>
     <ToolBar />
     <div className='blog-result'>
-        <Blog />
-        <Blog />
-        <Blog />
-        <Blog />
+        {myBlogs != {} &&
+            Object.values(myBlogs).map(blog => (
+                <Blog 
+                    key={blog.blog_id}
+                    blog_title={blog.name_blog} 
+                    blog_types={blog.type_names}
+                    blog_view={blog.view}
+                    day_create={blog.updated_at}
+                />
+            ))
+        }
     </div>
     </>);
 }
 
-function BlogViewHeight({blog_id, heightValue, widthValue}){
+function BlogViewHeight({blog_id, heightValue, widthValue, blog}){
 
     return(<>
         <div className='view-height' 
@@ -73,13 +149,17 @@ function BlogViewHeight({blog_id, heightValue, widthValue}){
                 Blog {blog_id}
             </label>
         </div>
-        
+        <div className='popup-box' id={'popup-id'+blog_id} key={blog_id} >
+                NAME: {blog.name_blog}
+        </div>
     </>);
 }
 
 function Statistical(){
 
+    const {myBlogs, setMyBolgs, highestView} = useContext(AuthorContex);
     const [widthValue, setWidthValue] = useState("");
+
     useEffect(()=>{
         setWidthValue(100 / 23);
     }, []);
@@ -89,29 +169,15 @@ function Statistical(){
             <div className='all-time-view'>ALL TIME VIEW : </div>
         </div>
         <div className='board-statistical'>
-            <BlogViewHeight blog_id={"1"} heightValue="25%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"2"} heightValue="10%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"3"} heightValue="35%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"4"} heightValue="45%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"5"} heightValue="75%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"6"} heightValue="90%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"7"} heightValue="75%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"8"} heightValue="43%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"9"} heightValue="5%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"10"} heightValue="20%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"11"} heightValue="93%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"12"} heightValue="50%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"13"} heightValue="78%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"14"} heightValue="33%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"15"} heightValue="75%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"16"} heightValue="90%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"17"} heightValue="75%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"18"} heightValue="43%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"19"} heightValue="5%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"20"} heightValue="20%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"21"} heightValue="93%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"22"} heightValue="50%" widthValue={widthValue}/>
-            <BlogViewHeight blog_id={"23"} heightValue="78%" widthValue={widthValue}/>
+            {myBlogs && 
+                Object.values(myBlogs).map((blog , index)=>(
+                    <BlogViewHeight key={index} 
+                        blog_id={blog.id_blog} 
+                        heightValue={(blog.view / highestView  * 100 ) * (50 /  1600) * 100 } 
+                        blog={blog}
+                        widthValue={widthValue}/>
+                ))
+            }
         </div>
     </>);
 }
@@ -127,6 +193,8 @@ function CommentContent({user_name, children}){
 }
 
 function BlogComment({title, commentCount}){
+
+    
 
     return(<>
         <div className='blog-title-comment'>{title}</div>
@@ -189,7 +257,7 @@ export default function BlogManage(){
     const [content, currentNav, changeNav] = useBlogNav();
     console.log("Re-render");
     const {setShowPopup} = useContext(MessageContex);
-
+    
     return(<>
         <div className="BlogManage">
             <NavColums>

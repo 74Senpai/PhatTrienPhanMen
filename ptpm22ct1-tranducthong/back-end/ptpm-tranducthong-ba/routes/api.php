@@ -48,6 +48,7 @@ Route::prefix('public')->group(function(){
     Route::get('find/user/id={id}', [UserController::class, 'findUserById']);
     Route::get('blog/show/type={type}', [BlogController::class, 'getBlogByType']);
     Route::get('blog/show/orderby/view', [BlogController::class, 'getBlogByViews']);
+    Route::get('blog/name={name_blog}', [BlogController::class, 'findByName']);
 });
 
 Route::prefix('author')

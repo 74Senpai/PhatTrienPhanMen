@@ -47,6 +47,10 @@ html{
     text-decoration: underline;
 }
 
+.nav{
+    text-decoration: none !important;
+    /* color: white */
+}
 .nav:focus{
     outline: 0;
 }

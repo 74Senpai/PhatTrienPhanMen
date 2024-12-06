@@ -438,4 +438,23 @@ class BlogController extends Controller
             ],500);
         }
     }
+
+    public function findByName(Request $request, String $name_blog){
+        try{
+            $blog = Blog::where('name_blog', $name_blog)->first();
+            $blog->view = $blog->view + 1;
+            $blog->save();
+            $blog->thumbnail = url('storage/' . $blog->thumbnail);
+            
+            return response()->json([
+                'success'   => 'Get blog by name successfully',
+                'data'      => $blog
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error' => 'Can not get blog ',
+                'message' => $e->getMessage()
+            ],500);
+        }
+    }
 }

@@ -7,6 +7,10 @@ header{
     z-index: 50;
 }
 
+header > div > a{
+    color: white;
+}
+
 header > div{
     flex-grow: 1;
     align-items: center;
@@ -63,6 +67,7 @@ header .title{
 
 header .account{
     width: 5%;
+    
 }
 
 header .active{

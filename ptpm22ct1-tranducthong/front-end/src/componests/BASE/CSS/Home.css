@@ -97,6 +97,8 @@
     text-overflow: ellipsis;
     border-radius: 0.2rem;
     font-size: 0.85rem;
+    text-decoration: none;
+    color: #001A65;
 }
 
 .title-big{
@@ -106,7 +108,8 @@
     height: 3rem;
     font-size: 1.2rem;
     font-weight: 900;
-
+    text-decoration: none;
+    color: black;
 }
 
 .content{
@@ -184,6 +187,7 @@
     /* display: flex;
     flex-grow: 1; */
     margin-left: 20px;
+    flex-grow: 1;
 }
 
 
@@ -202,8 +206,12 @@
 
 .templ1 .box .title-blog{
     clear: both;
+    /* width: 100%; */
+    flex-grow: 1;
 }
-
+.templ1 .box .title-blog *{
+    flex-grow: 1;
+}
 .type-title{
     width: 60rem;
     padding: 1rem;

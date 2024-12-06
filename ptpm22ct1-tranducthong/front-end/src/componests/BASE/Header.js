@@ -4,7 +4,9 @@ import "../BASE/CSS/Header.css";
 import { UseInforContex, 
         BlogTypesContext, 
         PagesRefContex, 
-        PagesSiteContex } from "../../Context/PagesContext.js";
+        PagesSiteContex, 
+        UserRoleContex} from "../../Context/PagesContext.js";
+import { Outlet, Link, NavLink } from "react-router-dom";
 
 
 function Header() {
@@ -12,65 +14,37 @@ function Header() {
     const [searchContent, setContentsSeach] = useState('');
     const [isShow, setShow] = useState(false);
     const { userInfor } = useContext(UseInforContex);
-    const [userRole, setUserRole] = useState('guest');
+    const {userRole} = useContext(UserRoleContex);
     const {blogTypes} = useContext(BlogTypesContext);
-    const {setRef} = useContext(PagesRefContex);
-    const {content, currentSite, changeSite} = useContext(PagesSiteContex);
+    const {currentSite, changeSite} = useContext(PagesSiteContex);
 
-    useEffect(function () {
-        const userRole = async () => {
-            if (userInfor.token) {
-                try {
-                    const response = await fetch('http://127.0.0.1:8000/api/user/role', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${userInfor.token}`,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    const data = await response.json();
-                    const role = data.data;
-                    setUserRole(role.name_role);
-
-                } catch (error) {
-                    console.log('Can not get user information');
-                }
-            }else{
-                setUserRole('guest');
-            }
-        }
-        userRole();
-
-    }, [userInfor.token]);
+   
 
 
     return (<>
         <header>
-            <div className={"nav " + `${currentSite === "home" ? "active" : ""}`} onClick={() => changeSite("home")}>
+            <div><NavLink to="/" className={'nav'} >
                 <img src="https://media.dau.edu.vn/Media/2_SVDAU/Images/dau-csv12982278-5-e.png" />
-            </div>
-            {userRole == 'ADMIN' &&<>
-                <div className={"nav " + `${currentSite === "admin" ? "active" : ""}`} onClick={() => changeSite("admin")}>ADMIN</div>
-                <div className={"nav " + `${currentSite === "blog" ? "active" : ""}`} onClick={() => changeSite("blog")}>BLOG</div>
+            </NavLink></div>
+            {userRole === 'ADMIN' &&<>
+                <div><NavLink to="/admin" className={'nav'} >ADMIN</NavLink></div>
             </>}
-            {userRole == 'AUTHOR' &&
-                <div className={"nav " + `${currentSite === "blog" ? "active" : ""}`} onClick={() => changeSite("blog")}>BLOG</div>
+            {(userRole === 'AUTHOR' || userRole === 'ADMIN') &&
+                <div><NavLink to="/blog" className={'nav'} >BLOG</NavLink></div>
             }
             {blogTypes &&
                blogTypes.map((value, index)=>(<React.Fragment key={index}>
                     {index < 5 && 
-                        <div key={value.id_type} 
-                            className={"nav " + `${currentSite === value.type_name ? "active" : ""}`} 
-                            onClick={() => {changeSite(value.type_name); setRef(value.type_name, 'HOME')}}>
-                            {value.type_name}
+                        <div key={value.id_type} >
+                            <NavLink to={"/blog-type/" + value.type_name} 
+                                className={'nav'} >{value.type_name}</NavLink>
                         </div>
                     }
                 </React.Fragment>))
             }
             {blogTypes.length >= 5 &&
-                <div className="nav">
-                    ALL
+                <div >
+                    <NavLink to={"/blog-type/all" } className="nav">ALL</NavLink>
                 </div>
             }
             {/* <div className={"nav " + `${currentSite === "javascript" ? "active" : ""}`} onClick={() => changeSite("javascript")}>JAVASCRIPT</div>
@@ -92,6 +66,7 @@ function Header() {
             </div>
             {isShow && <Account isShowForm={setShow} data={userInfor} userRole={userRole}/>}
         </header>
+        {/* <Outlet /> */}
     </>);
 }
 

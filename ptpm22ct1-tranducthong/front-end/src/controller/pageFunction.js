@@ -37,3 +37,15 @@ export async function getAllBlogType(){
     }
 
 }
+
+export const API = {
+    allBlog : "http://127.0.0.1:8000/api/public/blog/all",
+    userInfor : "http://127.0.0.1:8000/api/user/information",
+    orderByView : "http://127.0.0.1:8000/api/public/blog/show/orderby/view",
+    blogbyType : "http://127.0.0.1:8000/api/public/blog/show/type=",
+    allType : "http://127.0.0.1:8000/api/public/blog-type/show/all",
+    blogByID : "http://127.0.0.1:8000/api/public/blog/id=",
+    commentByBlog : "http://127.0.0.1:8000/api/public/comment/blog/id=",
+}
+
+export const csrollToTop = ()=> window.scrollTo({ top: 0, behavior: 'smooth' }); 

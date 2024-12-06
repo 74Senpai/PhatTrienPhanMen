@@ -1,25 +1,40 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ReactDOM from 'react-dom/client';
+
 import App from './componests/App.js';
 import reportWebVitals from './default/reportWebVitals.js';
 import { MessageProvider } from './Context/MessageContex.js';
-import { BlogTypesProvider, UseInforProvider, PagesRefProvider, PagesSiteProvider } from './Context/PagesContext.js';
+import {
+  BlogTypesProvider,
+  UseInforProvider,
+  PagesRefProvider,
+  PagesSiteProvider,
+  UserRoleProvider,
+  AuthorProvider
+} from './Context/PagesContext.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // require('dotenv').config();
 root.render(
   <React.StrictMode>
-    <PagesSiteProvider>
-    <PagesRefProvider>
-    <UseInforProvider>
-    <MessageProvider>
-        <BlogTypesProvider>
-          <App />
-        </BlogTypesProvider>
-      </MessageProvider>
-    </UseInforProvider>
-    </PagesRefProvider>
-    </PagesSiteProvider>
+    <BlogTypesProvider>
+      <PagesRefProvider>
+        <PagesSiteProvider>
+          <UseInforProvider>
+            <UserRoleProvider>
+              <AuthorProvider>
+                <MessageProvider>
+                  <BrowserRouter>
+                    <App />
+                  </BrowserRouter>
+                </MessageProvider>
+              </AuthorProvider>
+            </UserRoleProvider>
+          </UseInforProvider>
+        </PagesSiteProvider>
+      </PagesRefProvider>
+    </BlogTypesProvider>
   </React.StrictMode>
 );
 

@@ -403,3 +403,12 @@ input[type="file"] {
     /* width: 30%; */
     background-color:rgb(237, 237, 237);
 }
+
+.popup-box{
+    position: absolute;
+    width: 10rem;
+    border: 1px solid #001a65;
+    background-color: #fff;
+    display: none;
+    /* z-index: 50; */
+}

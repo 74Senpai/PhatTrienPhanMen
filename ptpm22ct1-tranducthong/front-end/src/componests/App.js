@@ -1,10 +1,13 @@
+import { useContext, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
 import '../CSS/App.css';
 import { Base } from './BASE';
 import { getToken } from '../controller/pageFunction';
 import { UseInforContex } from '../Context/PagesContext';
-import { useContext, useEffect } from 'react';
 import { MessageContex } from '../Context/MessageContex';
+import BlogManage from './Blog';
+
 
 function App() {
 
@@ -28,7 +31,7 @@ function App() {
 
         const data = await response.json();
         const userData = data.data;
-        if (!response.ok && !userData.user_id ) {
+        if (!response.ok && data.error ) {
           setShowPopup(pre => ({
             message: "Get user infor fails : " + data.message,
             isShow: true,
@@ -36,6 +39,7 @@ function App() {
             type: "error",
             action: 'none',
           }));
+          return;
         }
 
         setUserInfor(pre => ({

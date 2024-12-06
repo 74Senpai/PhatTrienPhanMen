@@ -1,12 +1,14 @@
-import './CSS/ReadBlogPage.css';
+import { Link, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github.css';
 import { useContext, useEffect, useState } from 'react';
-// import { token } from '../../controller/pageFunction';
-import { UseInforContex } from '../../Context/PagesContext';
-import { MessageContex } from '../../Context/MessageContex';
 
+import './CSS/ReadBlogPage.css';
+// import { token } from '../../controller/pageFunction';
+import { UseInforContex, PagesSiteContex } from '../../Context/PagesContext';
+import { MessageContex } from '../../Context/MessageContex';
+import {csrollToTop} from '../../controller/pageFunction.js'; 
 
 
 export default function ReadBlogPage() {
@@ -19,11 +21,22 @@ export default function ReadBlogPage() {
     const [comments, setComments] = useState({});
     const {setShowPopup} = useContext(MessageContex);
     const [contentComment, setContentComment] = useState('');
+    const {currentSite, changeSite} = useContext(PagesSiteContex); 
+    const {blogType, nameBlog} = useParams();
+    const [isSendComment, setIsSendComment] = useState(false);
 
     useEffect( function (){
+        csrollToTop();
         const fetchData = async () => {
+            setShowPopup( pre=>({
+                message : "Loading ... ",
+                isShow : true,
+                type : "infor",
+                action : 'none',
+            }));
+            
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/public/blog/id=1');
+                const response = await fetch(`http://127.0.0.1:8000/api/public/blog/name=${nameBlog}`);
                 if (response.ok) {
                     const data = await response.json(); // Parse JSON from the response
                     const dataBlog = data.data;
@@ -35,11 +48,37 @@ export default function ReadBlogPage() {
                         setHTML('');
                     } else {
                         setHTML(dataBlog.content_blog);
+                        setMarkDown('');
                     }
+
+                    setShowPopup( pre=>({
+                        message : "Done",
+                        isShow : true,
+                        timeOut : 1500,
+                        type : "done",
+                        action : 'none',
+                        filter : false
+                    }));
                 } else {
                     console.error('Failed to fetch:', response.status, response.statusText);
+                    setShowPopup( pre=>({
+                        message : "Failed to fetch",
+                        isShow : true,
+                        timeOut : 1500,
+                        type : "error",
+                        action : 'none',
+                        filter : true
+                    }));
                 }
             } catch (error) {
+                setShowPopup( pre=>({
+                    message : "Failed to fetch",
+                    isShow : true,
+                    timeOut : 1500,
+                    type : "error",
+                    action : 'none',
+                    filter : true
+                }));
                 console.error('Error fetching data:', error);
             }
         };
@@ -61,13 +100,13 @@ export default function ReadBlogPage() {
         
         fetchData();
         fetchListBlog();
-    }, []);
+    }, [blogType, nameBlog]);
 
 
     useEffect(function(){
         const fetchBlogComments = async ()=>{
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/public/comment/blog/id=1');
+                const response = await fetch(`http://127.0.0.1:8000/api/public/comment/blog/id=${blogContent.id_blog}`);
                 if (response.ok) {
                     const data = await response.json(); // Parse JSON from the response
                     const listComments = data.data;
@@ -80,7 +119,7 @@ export default function ReadBlogPage() {
             }
         };
         fetchBlogComments();
-    }, [blogContent]);
+    }, [blogContent, isSendComment]);
 
     const handleSendComment = async ()=>{
         if(!userInfor.token){
@@ -111,7 +150,8 @@ export default function ReadBlogPage() {
             type : "infor",
             action : 'none',
         }));
-
+        
+        setIsSendComment(false);
         try {
             const response = await fetch('http://127.0.0.1:8000/api/user/comment/create-new', {
                 method: 'POST',
@@ -121,7 +161,7 @@ export default function ReadBlogPage() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id_blog: 5,
+                    id_blog: blogContent.id_blog,
                     content_comment: contentComment,
                 }),
             });
@@ -145,6 +185,7 @@ export default function ReadBlogPage() {
                     type : "done",
                     action : 'none',
                 })); 
+                setIsSendComment(true);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
@@ -159,15 +200,20 @@ export default function ReadBlogPage() {
         }
     }
 
-    return (
+    return (<>
+        {/* <PageRef /> */}
         <div className='read-blog-page-main'>
             <div className='read-blog-page-top'>
                 <div className='list-blog'>
                     <div>
                     {listBlog &&
                         Object.values(listBlog).map((blog) => (
-                            <div key={blog.id_blog} className='nav blog-list-children'>
-                                {blog.name_blog}
+                            <div key={blog.id_blog} 
+                                onClick={()=>changeSite(blog.name_blog)}
+                                className='nav blog-list-children'>
+                                <Link to={"/blog-type/"+blog.type_names[0]+"/"+blog.name_blog} className='nav'>
+                                    {blog.name_blog}
+                                </Link>
                             </div>
                         ))}
                     </div>
@@ -221,7 +267,9 @@ export default function ReadBlogPage() {
                                     <div className='reader-name' key={comment.id_comment}>
                                         {comment.name}
                                     </div>
-                                    <div className='reader-comment-content'>{comment.content_comment}</div>
+                                    <div className='reader-comment-content'>
+                                        {comment.content_comment}|{comment.day_comment}
+                                    </div>
                                 </>)) : 'No comment in blog'
                             }
                         </div>
@@ -229,5 +277,5 @@ export default function ReadBlogPage() {
                 </div>
             </div>
         </div>
-    )
+        </>);
 }
