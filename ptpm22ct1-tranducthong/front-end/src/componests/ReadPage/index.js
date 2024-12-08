@@ -1,14 +1,15 @@
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github.css';
-import { useContext, useEffect, useState } from 'react';
 
 import './CSS/ReadBlogPage.css';
 // import { token } from '../../controller/pageFunction';
 import { UseInforContex, PagesSiteContex } from '../../Context/PagesContext';
 import { MessageContex } from '../../Context/MessageContex';
-import {csrollToTop} from '../../controller/pageFunction.js'; 
+import {csrollToTop, wrapUrls, aLink} from '../../controller/pageFunction.js';
+
 
 
 export default function ReadBlogPage() {
@@ -105,17 +106,19 @@ export default function ReadBlogPage() {
 
     useEffect(function(){
         const fetchBlogComments = async ()=>{
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/public/comment/blog/id=${blogContent.id_blog}`);
-                if (response.ok) {
-                    const data = await response.json(); // Parse JSON from the response
-                    const listComments = data.data;
-                    setComments(listComments);
-                } else {
-                    console.error('Failed to fetch:', response.status, response.statusText);
+            if(blogContent){
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/public/comment/blog/id=${blogContent.id_blog}`);
+                    if (response.ok) {
+                        const data = await response.json(); // Parse JSON from the response
+                        const listComments = data.data;
+                        setComments(listComments);
+                    } else {
+                        console.error('Failed to fetch:', response.status, response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error fetching data:', error);
                 }
-            } catch (error) {
-                console.error('Error fetching data:', error);
             }
         };
         fetchBlogComments();
@@ -200,6 +203,12 @@ export default function ReadBlogPage() {
         }
     }
 
+    const handleClick = (e) => {
+        if (e.target.classList.contains("a-link")) {
+          aLink(e);
+        }
+    };
+
     return (<>
         {/* <PageRef /> */}
         <div className='read-blog-page-main'>
@@ -221,7 +230,7 @@ export default function ReadBlogPage() {
                
                 <div className='read-blog-content'>
                     <div className='read-blog-title'>{blogContent.name_blog}</div>
-                    <div className='date-up-blog'>{new Date(blogContent.updated_at).toLocaleString()}</div>
+                    <div className='date-up-blog'>Cre: {new Date(blogContent.updated_at).toLocaleString()} by {blogContent.name_author}</div>
                     <div className='read-content'>
                     {markdown &&
                         <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
@@ -252,9 +261,8 @@ export default function ReadBlogPage() {
                             className='write-comment' 
                             onChange={ (e)=>setContentComment(e.target.value) }
                             value={contentComment}
-                            placeholder='What do you thing ?'>
-
-
+                            placeholder='Bạn đang nghĩ gì ?' >
+                            
                         </textarea>
                         <div className='send-comment-button'>
                             <button className='nav' onClick={handleSendComment}> SEND </button>
@@ -263,14 +271,27 @@ export default function ReadBlogPage() {
                     <div className='reader-comments'>
                         <div className='reader-comment'>
                             {comments ?
-                                Object.values(comments).map( comment => (<>
-                                    <div className='reader-name' key={comment.id_comment}>
+                                Object.values(comments).map( comment => (<React.Fragment key={comment.id_comment}>
+                                    <div className='reader-name' >
                                         {comment.name}
                                     </div>
                                     <div className='reader-comment-content'>
-                                        {comment.content_comment}|{comment.day_comment}
+                                        {/* {wrapUrls(comment.content_comment , '<a> ', ' </a>')} */}
+                                        <div 
+                                            dangerouslySetInnerHTML={{
+                                                __html: `<pre>${wrapUrls(comment.content_comment, '<span class="a-link">', '</span>')}</pre>`
+                                            }}
+                                            onClick={handleClick} />
+                                        <div className='comment-action'>
+                                            {comment.user_id == userInfor.user_id &&<>
+                                             <div className='nav action'><i className="fa-regular fa-pen-to-square"></i></div>
+                                             <div className='nav action'><i className="fa-solid fa-trash"></i></div>
+                                            </>}
+                                            <div className='nav action'><i className="fa-solid fa-reply"></i></div>
+                                            <div className='date-up-blog'>{comment.day_comment} </div>   
+                                        </div> 
                                     </div>
-                                </>)) : 'No comment in blog'
+                                </React.Fragment>)) : 'No comment in blog'
                             }
                         </div>
                     </div>

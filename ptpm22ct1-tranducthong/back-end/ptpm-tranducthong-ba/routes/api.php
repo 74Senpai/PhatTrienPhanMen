@@ -37,6 +37,10 @@ Route::middleware(['auth:sanctum'])
             Route::post('blog-type/create', [BlogTypeController::class, 'createNewBlogType']);
             Route::get('comment/all', [CommentsController::class, 'getAllComments']);
             Route::get('comment/user/id={id}', [CommentsController::class, 'getUserAllComments']);
+            Route::get('page/total-informations', [AdminController::class, 'getTotalInfor']);
+            Route::get('user/all', [AdminController::class, 'getAllUser']);
+            Route::get('author/all', [AdminController::class, 'getAllAuthor']);
+            Route::get('blog/all', [AdminController::class, 'getAllBlog']);
 });
 
 Route::prefix('public')->group(function(){
@@ -58,6 +62,7 @@ Route::prefix('author')
         Route::delete('blog/delete/id={id}', [BlogController::class, 'destroyBlog']);
         Route::put('blog/update', [BlogController::class, 'updateBlog']);
         Route::get('blog/all', [AuthorController::class, 'getAllBlogInformation']);
+        Route::get('comment/all/blog', [CommentsController::class, 'getAuthorAllBlogComment']);
 });
     
 Route::prefix('user')

@@ -16,7 +16,7 @@
     text-align: center;
     flex-grow: 1;
     padding: 1.75rem;
-    height: 90vh;
+    min-height: 90vh;
 }
 
 .manage-nav{
@@ -39,6 +39,7 @@
 .row-box{
     width: 100%;
     text-align: left;
+    height: auto;
 }
 .row-box > *{
     margin-top: 0.9rem;
@@ -99,3 +100,84 @@ input[name='describe']{
 .type-list{
     width: 100%;
 }
+.content-results > div,
+.title-infor-header > div{
+    flex-grow: 1;
+    text-align: center;
+}
+
+
+.user-name{
+    max-width: 27% !important;
+    min-width: 27% !important;
+    flex-grow: 0;
+
+}
+.user-comment{
+    max-width: 10% !important;
+    min-width: 10% !important;
+    flex-grow: 0;
+}
+.user-author-account{
+    max-width: 20% !important;
+    min-width: 20% !important;
+    flex-grow: 0;
+}
+.user-day-signup{
+    max-width: 16% !important;
+    min-width: 16% !important;
+    flex-grow: 0;
+}
+.user-email{
+    max-width: 27% !important;
+    min-width: 27% !important;
+    flex-grow: 0;
+}
+
+.author-name{
+    max-width: 30% !important;
+    min-width: 30% !important;
+    flex-grow: 0;
+}
+.author-email{
+    max-width: 30% !important;
+    min-width: 30% !important;
+    flex-grow: 0;
+}
+.author-phone{
+    max-width: 20% !important;
+    min-width: 20% !important;
+    flex-grow: 0;
+}
+.author-total-blog{
+    max-width: 10% !important;
+    min-width: 10% !important;
+    flex-grow: 0;
+}
+.author-total-view{
+    max-width: 10% !important;
+    min-width: 10% !important;
+    flex-grow: 0;
+}
+
+.blog-name-blog{
+    max-width: 30% !important;
+    min-width: 30% !important;
+    flex-grow: 0;
+}
+.blog-author-name{
+    max-width: 20% !important;
+    min-width: 20% !important;
+    flex-grow: 0;
+}
+.blog-total-comment{
+    max-width: 10% !important;
+    min-width: 10% !important;
+    flex-grow: 0;
+}
+.blog-total-view{
+    max-width: 5% !important;
+    min-width: 5% !important;
+    flex-grow: 0;
+}
+

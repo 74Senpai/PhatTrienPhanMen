@@ -49,3 +49,13 @@ export const API = {
 }
 
 export const csrollToTop = ()=> window.scrollTo({ top: 0, behavior: 'smooth' }); 
+
+//vendor
+export function wrapUrls(text, prefix, suffix) {
+    const urlRegex = /\bhttps?:\/\/[^\s/$.?#].[^\s]*\b/g;
+    return text.replace(urlRegex, (url) => `${prefix}${url}${suffix}`);
+}
+
+export function aLink(e){
+    window.open(`${e.target.innerText}`, "_blank");
+}

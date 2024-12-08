@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Author;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -68,7 +69,7 @@ class CommentsController extends Controller
     public function getBlogAllComments(Request $request, int $id_blog){
         try{
             $results = DB::select(
-             "SELECT users.name, users.email, comments.id_comment, comments.content_comment,
+             "SELECT users.user_id, users.name, users.email, comments.id_comment, comments.content_comment,
                             comments.day_comment, id_parent_comment
                     FROM comments
                         INNER JOIN users ON users.user_id = comments.user_id   
@@ -90,6 +91,38 @@ class CommentsController extends Controller
                 'message'   => $e->getMessage()
             ], 500);
         }
+    } 
+
+    public  function getAuthorAllBlogComment( Request $request){
+        $user = $request->user();
+        try{
+            $author = Author::where('user_id', $user->user_id)->first();
+            if($author == null){
+                return response()->json([
+                    'error' => 'Author not found'
+                ], 404);
+            }
+
+            $commentsRaw = 
+                DB::select("SELECT DISTINCT name_blog, comments.* , authors.name_author FROM authors
+                                INNER JOIN blogs ON blogs.id_author = authors.id_author
+                                INNER JOIN comments ON comments.id_blog = blogs.id_blog
+                            WHERE authors.id_author = ?
+                ", [$author->id_author]);
+
+            return response()->json([
+                'success' => 'Get comment success',
+                'data' => $commentsRaw
+            ], 200);
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'     => 'Can not get comment !!!',
+                'message'   => $e->getMessage()
+            ], 500);
+        }
+
     }
 
     

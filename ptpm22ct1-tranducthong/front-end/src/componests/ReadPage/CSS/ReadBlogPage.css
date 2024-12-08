@@ -100,6 +100,7 @@
     padding: 1.5rem;
     background-color: white !important;
     min-height: 3rem;
+    text-align: justify;
 }
 .send-comment-button{
     text-align: right;
@@ -153,6 +154,7 @@
     top: -1rem;
     z-index: 9;
     color: black;
+    text-wrap: wrap;
 }
 
 .blog-list-children{
@@ -171,3 +173,19 @@
     text-align: right;
     margin-bottom: 1.25rem;
 }
+
+.comment-action{
+    text-align: right;
+}
+.comment-action > div {
+    display: inline-block;
+    padding: 0.25rem;
+}
+.action > i{
+    /* background-color: gainsboro; */
+    color: gray;
+}
+.action > i:hover{
+    color: #5271ff;
+}
+

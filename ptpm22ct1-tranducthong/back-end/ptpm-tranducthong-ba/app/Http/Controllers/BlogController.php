@@ -363,6 +363,7 @@ class BlogController extends Controller
         $result = $groupedBlogs->map(function ($items, $id_blog) {
             $types = $items->pluck('id_type')->toArray(); // Lấy tất cả id_type
             $typeNames = $items->pluck('type_name')->toArray(); // Lấy tất cả type_name
+            $blog_comment = $items->pluck('id_comment')->toArray();
     
             return [
                 'id_blog' => $id_blog,
@@ -371,7 +372,8 @@ class BlogController extends Controller
                 'updated_at' => $items->first()->updated_at, // Giữ lại updated_at
                 'show_type' => $items->first()->show_type, // Giữ lại show_type
                 'id_types' => $types, // Mảng các id_type
-                'type_names' => $typeNames // Mảng các type_name
+                'type_names' => $typeNames, // Mảng các type_name
+                'id_comments' => $blog_comment
             ];
         });
 
@@ -441,10 +443,16 @@ class BlogController extends Controller
 
     public function findByName(Request $request, String $name_blog){
         try{
-            $blog = Blog::where('name_blog', $name_blog)->first();
-            $blog->view = $blog->view + 1;
-            $blog->save();
-            $blog->thumbnail = url('storage/' . $blog->thumbnail);
+
+            $blogRaw = DB::select("SELECT * FROM blogs 
+                                    INNER JOIN authors ON authors.id_author = blogs.id_author
+                                WHERE blogs.name_blog = ?",
+                        [$name_blog]);
+            
+            $blog = $blogRaw[0];
+            DB::update("UPDATE blogs SET view = ? WHERE id_blog = ?", [$blog->view + 1, $blog->id_blog]);
+            
+           
             
             return response()->json([
                 'success'   => 'Get blog by name successfully',

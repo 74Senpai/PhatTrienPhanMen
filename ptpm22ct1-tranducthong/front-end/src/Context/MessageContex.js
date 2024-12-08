@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, act } from "react";
 import Loading from "../componests/Loading/Loading";
 
 export const MessageContex = createContext();
@@ -14,6 +14,8 @@ export function MessageProvider({children}){
         filter : false  
     });
 
+    const [isSubmit, setSubmit] = useState(null);
+
     // const popupValue = showPopup;
     useEffect(() => {
         if (showPopup.timeOut > 0 && showPopup.isShow) {
@@ -27,10 +29,13 @@ export function MessageProvider({children}){
 
             return () => clearTimeout(timer);
         }
-    }, [showPopup.timeOut, showPopup.isShow]);
+        if(showPopup.action !== 'none' && showPopup.action !== null && isSubmit == true){
+            setSubmit(false);
+        }
+    }, [showPopup.timeOut, showPopup.isShow, isSubmit]);
 
     return (
-        <MessageContex.Provider value={{showPopup, setShowPopup}}>
+        <MessageContex.Provider value={{showPopup, setShowPopup, isSubmit, setSubmit}}>
             {children}
             {showPopup.isShow && 
                 <Loading 
@@ -38,6 +43,8 @@ export function MessageProvider({children}){
                     mess={showPopup.message} 
                     isShow={true}
                     filter={showPopup.filter} 
+                    action={showPopup.action}
+                    setShowPopup={setShowPopup}
                 />}
         </MessageContex.Provider>
     )

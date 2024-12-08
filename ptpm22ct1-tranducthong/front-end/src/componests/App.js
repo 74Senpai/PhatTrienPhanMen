@@ -3,10 +3,10 @@ import { Routes, Route } from 'react-router-dom';
 
 import '../CSS/App.css';
 import { Base } from './BASE';
-import { getToken } from '../controller/pageFunction';
+import { getToken, aLink } from '../controller/pageFunction';
 import { UseInforContex } from '../Context/PagesContext';
 import { MessageContex } from '../Context/MessageContex';
-import BlogManage from './Blog';
+
 
 
 function App() {
@@ -65,6 +65,19 @@ function App() {
     getUserInfor();
   }, []);
 
+
+  // useEffect(() => {
+  //   const aLinks = document.getElementsByClassName('a-link');
+  //   Array.from(aLinks).forEach((element) => {
+  //     element.addEventListener('click', aLink);
+  //   });
+  
+  //   return () => {
+  //     Array.from(aLinks).forEach((element) => {
+  //       element.removeEventListener('click', aLink);
+  //     });
+  //   };
+  // }, []);
 
   console.log('App adad');
   return (<>

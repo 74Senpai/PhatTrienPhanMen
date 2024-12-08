@@ -70,3 +70,18 @@ html{
 .error *{
     color: red;
 }
+
+.a-link{
+    text-decoration: underline !important;
+    color: blue;
+}
+.a-link:hover{
+    color: blueviolet;
+    cursor: pointer;
+}
+.nav-cancel:hover{
+    color: rgb(255, 0, 0);
+}
+.nav-submit:hover{
+    color: rgb(0, 255, 42)
+}

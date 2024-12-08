@@ -60,3 +60,17 @@
 .warring-box .icon{
     background-color: rgb(255, 200, 0);
 }
+
+.unknow-box .icon{
+    background-color: red;
+}
+
+.check-box{
+    margin-left: 1rem;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+}
+.check-box > i{
+    margin-left: 1rem;
+}

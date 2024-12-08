@@ -3,15 +3,15 @@ import { useState, useContext, useEffect, memo } from 'react';
 import { MessageContex } from '../../Context/MessageContex';
 import { UseInforContex } from '../../Context/PagesContext';
 
+export default function ManageUserPage(){
 
-export default function ManageBlog(){
-
-    const [blogBlogs, setblogBlogs] = useState([]);
+    const [blogUsers, setBlogUsers] = useState([]);
     const {userInfor} = useContext(UseInforContex);
     const {setShowPopup} = useContext(MessageContex); 
 
+
     useEffect(()=>{
-        const  getBlogAuthors = async()=>{
+        const  getBlogUsers = async()=>{
             setShowPopup(pre=>({
                 ...pre,
                 message: "Fetch page informations",
@@ -20,7 +20,7 @@ export default function ManageBlog(){
             }));
     
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/admin/blog/all', {
+                const response = await fetch('http://127.0.0.1:8000/api/admin/user/all', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${userInfor.token}`,
@@ -30,18 +30,18 @@ export default function ManageBlog(){
                 });
     
                 const data = await response.json();
-                const blogs = data.data;
-                if (!response.ok ||  blogs == null) {
+                const blogUsers = data.data;
+                if (!response.ok || blogUsers == null) {
                     setShowPopup(pre=>({
                         ...pre,
-                        message: "Fail to get blogs infor",
+                        message: "Fail to get blog user infor",
                         isShow: true,
                         timeOut : 1500,
                         type: "error"
                     }));
                    
                 }else{
-                    setblogBlogs( blogs );
+                    setBlogUsers(blogUsers);
                     setShowPopup(pre=>({
                         ...pre,
                         message: "Success",
@@ -54,43 +54,37 @@ export default function ManageBlog(){
             } catch (error) {
                 setShowPopup(pre=>({
                     ...pre,
-                    message: "Fail to get blogs infor",
+                    message: "Fail to get blog user infor",
                     isShow: true,
                     timeOut : 1500,
                     type: "error"
                 }));
             }
         }
-        getBlogAuthors();
+        getBlogUsers();
     }, []);
 
     return(
         <div className='row-box'>
             <div className='title-infor-header'>
-               <div className="blog-name-blog">Blog title</div>
-               <div className='blog-author-name'>Writer's name</div>
-               <div className="blog-total-comment">Comments </div>
-               <div className="blog-total-view">Total View</div>
-               <div className="blog-types-name">Types</div>
+               <div className="user-name">User Name </div>
+               <div className='user-email'>Email</div>
+               <div className="user-day-signup">Day Signup</div>
+               <div className="user-comment">Comments </div>
+               <div className="user-author-account">Author Account</div>
             </div>
-            {blogBlogs &&
-                blogBlogs.map(blog=>(
-                    <div className='content-results' key={blog.id_blog}>
-                        <div className="blog-name-blog">{blog.name_blog}</div>
-                        <div className='blog-author-name'>{blog.name_author}</div>
-                        <div className="blog-total-comment">{`(${blog.total_comment})`} </div>
-                        <div className="blog-total-view">{`(${blog.view})`}</div>
-                        <div className="blog-types-name">
-                            {blog.type_names && 
-                                blog.type_names.map((type_names, index)=>(
-                                    <div className='nav type-blog' key={index}>{type_names}</div>
-                                ))
-                            }
-                        </div>
+            {blogUsers &&
+                blogUsers.map(user =>(
+                    <div className='content-results' key={user.user_id}> 
+                        <div className="user-name">{user.name}</div>
+                        <div className='user-email'>{user.email}</div>
+                        <div className="user-day-signup">{new Date(user.created_at).toLocaleDateString()}</div>
+                        <div className="user-comment"> {`(${user.comment_count})`} </div>
+                        <div className="user-author-account">{user.name_author || 'Chưa đăng ký'}</div>
                     </div>
                 ))
             }
-        </div>
 
+        </div>
     );
 }

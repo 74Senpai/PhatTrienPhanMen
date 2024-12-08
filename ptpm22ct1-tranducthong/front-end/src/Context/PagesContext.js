@@ -159,8 +159,12 @@ export const AuthorProvider = ({children})=>{
   
   const [myBlogs, setMyBolgs] = useState({});
   const [highestView, setHighestView] = useState(0);
+  const [action, setAction] = useState({
+    action : "none",
+    value : 'none',
+  });
   return(
-    <AuthorContex.Provider value={{myBlogs, setMyBolgs, highestView, setHighestView}}>
+    <AuthorContex.Provider value={{myBlogs, setMyBolgs, highestView, setHighestView , action, setAction}}>
       {children}
     </AuthorContex.Provider>
   )

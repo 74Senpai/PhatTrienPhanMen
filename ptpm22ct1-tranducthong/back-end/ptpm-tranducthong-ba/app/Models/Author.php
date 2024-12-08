@@ -11,8 +11,13 @@ class Author extends Model
     protected $table = 'authors';
     protected $primaryKey = 'id_author';
     protected $fillable = [
-        'name_author','phone_number','id_role','user_id'
+        'name_author','phone_number','id_role','user_id','id_author'
     ]; 
     public $timestamps = false;
 
+    public function author()
+    {
+        return $this->belongsTo(Author::class, 'id_author',  'id_author');
+    }
+    
 }

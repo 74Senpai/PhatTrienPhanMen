@@ -4,9 +4,9 @@ import { MessageContex } from '../../Context/MessageContex';
 import { UseInforContex } from '../../Context/PagesContext';
 
 
-export default function ManageBlog(){
+export default function ManageAuthorPage(){
 
-    const [blogBlogs, setblogBlogs] = useState([]);
+    const [blogAuthors, setBlogAuthors] = useState([]);
     const {userInfor} = useContext(UseInforContex);
     const {setShowPopup} = useContext(MessageContex); 
 
@@ -20,7 +20,7 @@ export default function ManageBlog(){
             }));
     
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/admin/blog/all', {
+                const response = await fetch('http://127.0.0.1:8000/api/admin/author/all', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${userInfor.token}`,
@@ -30,18 +30,18 @@ export default function ManageBlog(){
                 });
     
                 const data = await response.json();
-                const blogs = data.data;
-                if (!response.ok ||  blogs == null) {
+                const blogAuthors = data.data;
+                if (!response.ok || blogAuthors == null) {
                     setShowPopup(pre=>({
                         ...pre,
-                        message: "Fail to get blogs infor",
+                        message: "Fail to get blog author infor",
                         isShow: true,
                         timeOut : 1500,
                         type: "error"
                     }));
                    
                 }else{
-                    setblogBlogs( blogs );
+                    setBlogAuthors(blogAuthors);
                     setShowPopup(pre=>({
                         ...pre,
                         message: "Success",
@@ -54,7 +54,7 @@ export default function ManageBlog(){
             } catch (error) {
                 setShowPopup(pre=>({
                     ...pre,
-                    message: "Fail to get blogs infor",
+                    message: "Fail to get blog author infor",
                     isShow: true,
                     timeOut : 1500,
                     type: "error"
@@ -67,30 +67,23 @@ export default function ManageBlog(){
     return(
         <div className='row-box'>
             <div className='title-infor-header'>
-               <div className="blog-name-blog">Blog title</div>
-               <div className='blog-author-name'>Writer's name</div>
-               <div className="blog-total-comment">Comments </div>
-               <div className="blog-total-view">Total View</div>
-               <div className="blog-types-name">Types</div>
+                <div className="author-name">Writer's name </div>
+                <div className='author-email'>Email</div>
+                <div className="author-phone">Phone Number</div>
+                <div className="author-total-blog">Total Blog </div>
+                <div className="author-total-view">Total View</div>
             </div>
-            {blogBlogs &&
-                blogBlogs.map(blog=>(
-                    <div className='content-results' key={blog.id_blog}>
-                        <div className="blog-name-blog">{blog.name_blog}</div>
-                        <div className='blog-author-name'>{blog.name_author}</div>
-                        <div className="blog-total-comment">{`(${blog.total_comment})`} </div>
-                        <div className="blog-total-view">{`(${blog.view})`}</div>
-                        <div className="blog-types-name">
-                            {blog.type_names && 
-                                blog.type_names.map((type_names, index)=>(
-                                    <div className='nav type-blog' key={index}>{type_names}</div>
-                                ))
-                            }
-                        </div>
+            {blogAuthors &&
+                blogAuthors.map(author => (
+                    <div className='content-results' key={author.id_author}>
+                        <div className="author-name">{author.name_author}</div>
+                        <div className='author-email'>{author.email}</div>
+                        <div className="author-phone">{author.phone_number}</div>
+                        <div className="author-total-blog">{(`(${author.total_blog || '0'})`)}</div>
+                        <div className="author-total-view">{(`(${author.total_view || '0'})`)}</div>
                     </div>
                 ))
             }
         </div>
-
-    );
+    )
 }

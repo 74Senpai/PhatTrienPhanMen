@@ -1,8 +1,11 @@
+import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+
 import './CSS/BlogManage.css';
-import { useEffect, useState, useContext } from 'react';
 import WriteBlog from './WriteBlog';
 import { MessageContex } from '../../Context/MessageContex';
 import { UseInforContex, AuthorContex } from '../../Context/PagesContext';
+import { wrapUrls, aLink } from '../../controller/pageFunction.js';
 
 function Nav({children, ...navProps}){
 
@@ -19,19 +22,52 @@ function NavColums({children}){
     </>);
 }
 
-function Blog({blog_title, blog_types, day_create, blog_view, comments}){
+function Blog({blog_title, blog_types, day_create, blog_view, comments, id_blog, setAction}){
     const {setHighestView} = useContext(AuthorContex);
+    const {setShowPopup} = useContext(MessageContex);
 
-    setHighestView(pre => pre < blog_view ? blog_view : pre);
+    const deleteBlog = (id_blog, name_blog)=>{
+        console.log("Heaadsd sdasa");
+        setShowPopup(pre => ({
+            ...pre,
+            message : "Bạn có chắc muốn xóa blog \""+name_blog+"\" ?",
+            isShow : true,
+            type : "unknow",
+            action : 'confirm',
+            filter : true 
+        }));
+
+        setAction(pre => ({
+            ...pre,
+            action : "delete",
+            value  : id_blog
+        }));
+        console.log('dfasdfadsfads fasdf as', blog_title);
+    }
+
+    useEffect(()=>setHighestView(pre => pre < blog_view ? blog_view : pre), []);
+    console.log("Blog type ass", blog_types);
     return(<>
         <div className='box-blog'>
-            <div className='blog-title'>{blog_title}</div>
+            <div className='blog-title'>
+                <Link to={'/blog-type/'+blog_types[0].type_name +'/'+blog_title} className='nav'> {blog_title} </Link>
+            </div>
             <div className='blog-type'>
-                {blog_types.map((type, index) => (<span key={index}>{type} </span> ))}
+                {blog_types.map((type) => (
+                    <span key={type.id_type}>
+                        <Link to={'/blog-type/'+type.type_name} className='nav'> {type.type_name} </Link>
+                    </span> 
+                ))}
             </div>
             <div className='date-upblog'>{day_create}</div>
             <div className='blog-view'>VIEW:{blog_view}</div>
-            <div className='blog-comment'>COMMENTS: {comments}</div>
+            <div className='blog-comment'>COMMENTS: {`(${comments.length})`}</div>
+            <div className='comment-action'>
+                <div className='nav action'><i className="fa-regular fa-pen-to-square"></i></div>
+                <div className='nav action' onClick={()=>deleteBlog(id_blog, blog_title)}>
+                    <i className="fa-solid fa-trash"></i>
+                </div>
+            </div> 
         </div>
     </>);
 }
@@ -57,10 +93,71 @@ function ToolBar(){
 function BlogsCount(){
 
     const {userInfor} = useContext(UseInforContex);
-    const {setShowPopup} = useContext(MessageContex);
-    const {myBlogs, setMyBolgs, setHighestView} = useContext(AuthorContex);
+    const { isSubmit, setSubmit, setShowPopup} = useContext(MessageContex);
+    const {myBlogs, setMyBolgs, action, setAction} = useContext(AuthorContex);
+    const [isLoading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const deleteBlog = async ()=>{
+            if (isSubmit === true && action.value !== null) {
+                setShowPopup( pre=>({
+                    message : "Delete author blogs",
+                    isShow : true,
+                    type : "infor",
+                    action : 'none',
+                    filter : false
+                }));
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/author/blog/delete/id=${action.value}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${userInfor.token}`,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+    
+                    if (response.ok) {
+                         // Parse JSON from the response
+                        setShowPopup(pre => ({
+                            message : "Done",
+                            isShow : true,
+                            timeOut : 1500,
+                            type : "done",
+                            action : 'none',
+                            filter : false
+                        }));
+                    } else {
+                        console.error('Failed to fetch:', response.status, response.statusText);
+                        setShowPopup( pre=>({
+                            message : "Failed to fetch :"+data.message,
+                            isShow : true,
+                            timeOut : 1500,
+                            type : "error",
+                            action : 'none',
+                            filter : true
+                        }));
+                    }
+                } catch (error) {
+                    setShowPopup( pre=> ({
+                        message : "Failed to fetch "+error,
+                        isShow : true,
+                        timeOut : 1500,
+                        type : "error",
+                        action : 'none',
+                        filter : true
+                    }));
+                    console.error('Error fetching data:', error);
+                }
+            }
+        }
+        deleteBlog();
+        setLoading(true);
+    }, [action.value, isSubmit]);
 
     useEffect(()=>{
+
         const fetchBlogByAuthor = async()=>{
             setShowPopup( pre=>({
                 message : "Get author blogs",
@@ -113,10 +210,11 @@ function BlogsCount(){
                 }));
                 console.error('Error fetching data:', error);
             }
+            setLoading(false);
         }
-
-        fetchBlogByAuthor();
-    }, []);
+        if(isLoading)
+            fetchBlogByAuthor();
+    }, [isLoading]);
 
     return(<>
     <ToolBar />
@@ -124,11 +222,14 @@ function BlogsCount(){
         {myBlogs != {} &&
             Object.values(myBlogs).map(blog => (
                 <Blog 
-                    key={blog.blog_id}
+                    key={blog.id_blog}
+                    id_blog={blog.id_blog}
                     blog_title={blog.name_blog} 
-                    blog_types={blog.type_names}
+                    blog_types={blog.type_blog}
                     blog_view={blog.view}
                     day_create={blog.updated_at}
+                    comments={blog.comments}
+                    setAction={setAction}
                 />
             ))
         }
@@ -192,31 +293,46 @@ function CommentContent({user_name, children}){
     </>);
 }
 
-function BlogComment({title, commentCount}){
+function BlogComment({title, commentCount, blogs,}){
 
-    
+    const handleClick = (e) => {
+        if (e.target.classList.contains("a-link")) {
+          aLink(e);
+        }
+    };
 
     return(<>
         <div className='blog-title-comment'>{title}</div>
         <div className='comments-count'>Comments {`(${commentCount})`}
-            <CommentContent user_name={"Thong Thai"}>
-                Oh mai got oh mai got dfjkasfklasklfjaklsjfkljklj faklsfjklsjf dfklsajf afas jkljd adfsadfkj asfsd klj asdfsak safsf fsd casdf afs 
-            </CommentContent> 
-            <CommentContent user_name={"Thong Minh"}>
-                Oh mai tao tau 
-            </CommentContent>
+            {blogs.comments &&
+                blogs.comments.map((comment, index) =>(
+                    <CommentContent key={index} user_name={comment.user_name}>
+                        <div 
+                            dangerouslySetInnerHTML={{
+                                __html: `<pre>${wrapUrls(comment.content_comment, '<span class="a-link">', '</span>')}</pre>`
+                            }}
+                            onClick={handleClick} />
+                    </CommentContent> 
+                ))
+            }
+            
         </div>
     </>);
 }
 
 function CommentCount(){
-    
+    const {myBlogs, highestView} = useContext(AuthorContex);
+
     return(<>
         <ToolBar />
         <div className='comments-result'>
-            <BlogComment title={"Hom nay hoc JAVA"} commentCount={8}/>
-            <BlogComment title={"Hom nay hoc JAVA"} commentCount={8}/>
-            <BlogComment title={"Hom nay hoc JAVA"} commentCount={8}/>
+            {myBlogs &&
+                Object.values(myBlogs).map(((blog, index) => (<React.Fragment key={index}>
+                    {(blog.comments).length > 0 &&
+                        <BlogComment title={blog.name_blog} commentCount={(blog.comments).length} blogs={blog}/>}
+                </React.Fragment>)))
+            }
+            
         </div>
     </>);
 };

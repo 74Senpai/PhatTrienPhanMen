@@ -22,4 +22,8 @@ class Blog extends Model
 
     public $timestamps = true;
 
+    public function author()
+    {
+        return $this->belongsTo(Author::class, 'id_author', 'id_author');
+    }
 }
