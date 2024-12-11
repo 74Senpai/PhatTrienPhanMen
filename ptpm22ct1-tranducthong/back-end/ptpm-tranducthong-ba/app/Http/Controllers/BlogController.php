@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AppNotification;
 use App\Models\Blog;
 use App\Models\Author;
 use App\Models\ListBlogByType;
@@ -143,6 +144,7 @@ class BlogController extends Controller
             }
 
             DB::commit();  // Commit giao dịch nếu không có lỗi
+            event( new AppNotification('Tác giả "'.$author->name_author.' " vừa đăng 1 bài viết mới'));
             return response()->json(['message' => 'Blog created successfully'], 201);
 
         } catch (\Exception $e) {
@@ -204,7 +206,7 @@ class BlogController extends Controller
         if($user->id_role == config('roles.admin') || $user->id_role == config('roles.author')){
             $validate = Validator::make($request->all(), [
                 'id_blog'       => 'int|required',
-                'name_blog'     => 'required|string|max:255|unique:blogs',
+                'name_blog'     => 'required|string|max:255',
                 'content_blog'  => 'required|string',
                 'type_blog'     => 'required|array',
                 'type_blog.*'   => 'int',
@@ -216,7 +218,7 @@ class BlogController extends Controller
             if($validate->fails()){
                 return response()->json([
                     'error'     => 'Data not validity',
-                    'message'   => $validate
+                    'message'   => $validate->errors()->all()
                 ],400);
             }
             

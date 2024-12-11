@@ -159,12 +159,22 @@ export const AuthorProvider = ({children})=>{
   
   const [myBlogs, setMyBolgs] = useState({});
   const [highestView, setHighestView] = useState(0);
+  const [onEditBlog, setOnEditBlog] = useState({
+    id_blog : '',
+    blog : {},
+    editURL : 'http://127.0.0.1:8000/api/author/blog/update',
+    isEdit : false,
+  });
   const [action, setAction] = useState({
     action : "none",
     value : 'none',
   });
   return(
-    <AuthorContex.Provider value={{myBlogs, setMyBolgs, highestView, setHighestView , action, setAction}}>
+    <AuthorContex.Provider value={{myBlogs, setMyBolgs, 
+                                    highestView, setHighestView , 
+                                    action, setAction,
+                                    onEditBlog, setOnEditBlog,
+                                  }}>
       {children}
     </AuthorContex.Provider>
   )

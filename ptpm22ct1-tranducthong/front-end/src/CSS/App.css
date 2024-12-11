@@ -85,3 +85,54 @@ html{
 .nav-submit:hover{
     color: rgb(0, 255, 42)
 }
+
+.all-type-page{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    align-self: center;
+}
+.type-box-details{
+    /* background-image: url("https://cdn-blog.28tech.com.vn/thumbs/c%20tutorial/l%C3%A0m%20quen/b%C3%A0i%201/5_thumb_350.png"); */
+    width: 20%;
+    height: 5rem;
+    border-radius: 12px;
+    border: 1px solid black;
+    margin: 2rem;
+    align-items: center;
+    display: flex;
+    flex-grow: 0;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #ededed;
+    
+}
+.type-box-details > div{
+    padding: 0.25rem;
+    width: 100%;
+    /* display: flex; */
+    align-self: center;
+    height: 2rem;
+    align-items: center;
+    flex-grow: 0;
+    text-align: center;
+}
+.type-box-details > div:last-child{
+    display: inline-block;
+    width: 100%;
+    background-color: white;
+    flex-grow: 1;
+    text-align: center;
+}
+.type-name{
+    font-weight: 600;
+    /* color: white; */
+}
+.type-describe{
+    /* display: flex;
+    width: 100%;
+    flex-grow: 1; */
+}

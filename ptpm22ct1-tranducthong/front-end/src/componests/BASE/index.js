@@ -9,6 +9,8 @@ import { BlogTypesContext, PagesSiteContex, UserRoleContex } from "../../Context
 import ReadBlogPage from "../ReadPage/index.js";
 import ADMIN from "../ADMIN/index.js";
 import Pages, { AllTypePage } from "./pages.js";
+import { BlogsCount, CommentCount, Statistical } from "../Blog/index.js"; 
+import WriteBlog from "../Blog/WriteBlog.js";
 
 export function Base(){
     const {userRole} = useContext(UserRoleContex);
@@ -47,9 +49,16 @@ export function Base(){
             <Route path="/" element={<Home />} />
             <Route index element={<Home />} />
             {(userRole === "AUTHOR" || userRole === "ADMIN") ? 
-                <Route path="/blog" element={<BlogManage />} /> : ''}
+                <Route path="/blog" element={<BlogManage />} >
+                    <Route path="posts" element={<BlogsCount />}/>
+                    <Route path="statistical" element={<Statistical/>}/>
+                    <Route path="comments" element={<CommentCount />}/>
+                    <Route path="newblog" element={<WriteBlog />}/>
+                </Route> : ''}
             {userRole == "ADMIN" && 
-                <Route path="/admin" element={<ADMIN />}/>
+                <Route path="/admin" element={<ADMIN />}>
+                    
+                </Route>
             }
             <Route path="/blog-type">
                 <Route path="all" element={<AllTypePage />} /> 

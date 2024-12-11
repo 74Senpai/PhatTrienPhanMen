@@ -35,11 +35,16 @@ export function AllTypePage(){
         {blogTypes && 
             blogTypes.map((type)=>(
                 <div
-                    className="nav" 
+                    className="type-box-details" 
                     key={type.id_type}>
-                    <Link to={"/blog-type/"+type.type_name}>
-                        {type.type_name} | {type.describe}
-                    </Link>    
+                    <div className="type-name">
+                        <Link className="nav" to={"/blog-type/"+type.type_name}>
+                            {type.type_name}
+                        </Link>
+                    </div> 
+                    <div className="type-describe">
+                        {type.describe}
+                    </div>   
                 </div>
             ))
         }

@@ -30,7 +30,7 @@ function Header() {
                 <div><NavLink to="/admin" className={'nav'} >ADMIN</NavLink></div>
             </>}
             {(userRole === 'AUTHOR' || userRole === 'ADMIN') &&
-                <div><NavLink to="/blog" className={'nav'} >BLOG</NavLink></div>
+                <div><NavLink to="/blog/newblog" className={'nav'} >BLOG</NavLink></div>
             }
             {blogTypes &&
                blogTypes.map((value, index)=>(<React.Fragment key={index}>

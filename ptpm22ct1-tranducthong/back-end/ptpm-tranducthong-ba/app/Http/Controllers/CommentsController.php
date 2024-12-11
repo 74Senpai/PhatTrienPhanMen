@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Author;
+use App\Models\Blog;
+use App\Models\User;
+
+use App\Events\CommentsEvent;
+use App\Events\AuthorEvent;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -151,6 +156,19 @@ class CommentsController extends Controller
                 'id_parent_comment' => $request->id_parent_comment ?? null
             ]);
             DB::commit();
+            event(
+                new CommentsEvent(
+                    "co ai do vua comment vao blog",
+                    $request->id_blog, 
+                    $user->user_id));
+            $blog = Blog::find($request->id_blog);
+            $authorAcc = Author::where('id_author', $blog->id_author)->first();
+            event(
+                new AuthorEvent(
+                    'Nguoi dung '.$user->name.' vua binh luan ve blog '.$blog->name_blog.' cua ban !',
+                    $authorAcc->user_id));
+            
+
             return response()->json([
                 'success' => 'Create comment success !!!'
             ], 200);

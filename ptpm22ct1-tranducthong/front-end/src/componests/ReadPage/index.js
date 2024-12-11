@@ -209,6 +209,21 @@ export default function ReadBlogPage() {
         }
     };
 
+    useEffect(function (){
+        if(blogContent.id_blog){
+            console.log('comments-channel.blog.'+blogContent.id_blog);
+            window.Echo.channel('comments-channel.blog.'+blogContent.id_blog)
+            .listen('CommentsEvent', (e)=>{
+                setIsSendComment(true);
+            });
+            
+            return () => {
+                window.Echo.leave('comments-channel.blog.' + blogContent.id_blog);
+            };
+        }
+        
+    }, [blogContent.id_blog]);
+
     return (<>
         {/* <PageRef /> */}
         <div className='read-blog-page-main'>

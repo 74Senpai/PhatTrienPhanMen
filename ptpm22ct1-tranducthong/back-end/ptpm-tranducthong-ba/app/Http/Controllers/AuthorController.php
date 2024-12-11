@@ -40,7 +40,7 @@ class AuthorController extends Controller
 
             $blogs_infor = DB::select(
                 "SELECT blogs.id_blog, blogs.name_blog, blogs.view, blogs.updated_at, blogs.content_blog,
-                        blogs.show_type, type_blog.id_type, type_blog.type_name
+                        blogs.show_type, type_blog.id_type, type_blog.type_name, blogs.blog_describe
                  FROM blogs
                      INNER JOIN list_blog_by_type as list_type ON list_type.id_blog = blogs.id_blog
                      INNER JOIN type_blog ON type_blog.id_type = list_type.id_type
@@ -90,6 +90,7 @@ class AuthorController extends Controller
                     'type_blog' => $type_blogs,
                     'comments' => $comments->values(), // Loại bỏ index
                     'blog_content' => $items->first()->content_blog,
+                    'blog_describe' => $items->first()->blog_describe,
                 ];
             });
 

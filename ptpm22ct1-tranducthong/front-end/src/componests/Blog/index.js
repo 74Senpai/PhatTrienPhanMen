@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet, NavLink, useLocation, useNavigate} from 'react-router-dom';
 
 import './CSS/BlogManage.css';
 import WriteBlog from './WriteBlog';
@@ -22,9 +22,20 @@ function NavColums({children}){
     </>);
 }
 
-function Blog({blog_title, blog_types, day_create, blog_view, comments, id_blog, setAction}){
-    const {setHighestView} = useContext(AuthorContex);
+function Blog({blog_title, blog_types, day_create, blog_view, comments, id_blog, blog, setAction}){
+    const {setHighestView, setOnEditBlog} = useContext(AuthorContex);
     const {setShowPopup} = useContext(MessageContex);
+    const navigate = useNavigate();
+
+   const editBlog = (id_blog, blog)=>{
+        // setOnEditBlog(pre => ({
+        //     ...pre,
+        //     id_blog : id_blog,
+        //     blog : blog,
+        //     isEdit : true
+        // }));
+        navigate('/blog/newblog');
+   }
 
     const deleteBlog = (id_blog, name_blog)=>{
         console.log("Heaadsd sdasa");
@@ -63,7 +74,9 @@ function Blog({blog_title, blog_types, day_create, blog_view, comments, id_blog,
             <div className='blog-view'>VIEW:{blog_view}</div>
             <div className='blog-comment'>COMMENTS: {`(${comments.length})`}</div>
             <div className='comment-action'>
-                <div className='nav action'><i className="fa-regular fa-pen-to-square"></i></div>
+                <div className='nav action' onClick={()=>editBlog(id_blog, blog)}>
+                    <i className="fa-regular fa-pen-to-square"></i>
+                </div>
                 <div className='nav action' onClick={()=>deleteBlog(id_blog, blog_title)}>
                     <i className="fa-solid fa-trash"></i>
                 </div>
@@ -72,7 +85,7 @@ function Blog({blog_title, blog_types, day_create, blog_view, comments, id_blog,
     </>);
 }
 
-function ToolBar(){
+export function ToolBar(){
     return(<>
         <div className='tool-bar'>
             <div className='type-count'>
@@ -90,11 +103,11 @@ function ToolBar(){
     </>);
 }
 
-function BlogsCount(){
+export function BlogsCount(){
 
     const {userInfor} = useContext(UseInforContex);
     const { isSubmit, setSubmit, setShowPopup} = useContext(MessageContex);
-    const {myBlogs, setMyBolgs, action, setAction} = useContext(AuthorContex);
+    const {myBlogs, setMyBolgs, action, setAction, setOnEditBlog} = useContext(AuthorContex);
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -229,6 +242,7 @@ function BlogsCount(){
                     blog_view={blog.view}
                     day_create={blog.updated_at}
                     comments={blog.comments}
+                    blog={blog}
                     setAction={setAction}
                 />
             ))
@@ -237,7 +251,7 @@ function BlogsCount(){
     </>);
 }
 
-function BlogViewHeight({blog_id, heightValue, widthValue, blog}){
+export function BlogViewHeight({blog_id, heightValue, widthValue, blog}){
 
     return(<>
         <div className='view-height' 
@@ -256,7 +270,7 @@ function BlogViewHeight({blog_id, heightValue, widthValue, blog}){
     </>);
 }
 
-function Statistical(){
+export function Statistical(){
 
     const {myBlogs, setMyBolgs, highestView} = useContext(AuthorContex);
     const [widthValue, setWidthValue] = useState("");
@@ -293,7 +307,7 @@ function CommentContent({user_name, children}){
     </>);
 }
 
-function BlogComment({title, commentCount, blogs,}){
+export function BlogComment({title, commentCount, blogs,}){
 
     const handleClick = (e) => {
         if (e.target.classList.contains("a-link")) {
@@ -320,7 +334,7 @@ function BlogComment({title, commentCount, blogs,}){
     </>);
 }
 
-function CommentCount(){
+export function CommentCount(){
     const {myBlogs, highestView} = useContext(AuthorContex);
 
     return(<>
@@ -371,19 +385,27 @@ function useBlogNav(){
 export default function BlogManage(){
    
     const [content, currentNav, changeNav] = useBlogNav();
-    console.log("Re-render");
-    const {setShowPopup} = useContext(MessageContex);
+    const location = useLocation();
+    
     
     return(<>
         <div className="BlogManage">
             <NavColums>
-                <Nav className={"nav " +`${currentNav === "posts" ? "active":""}`} onClick={()=>changeNav("posts")}>Bài đăng</Nav>
-                <Nav className={"nav "+`${currentNav === "statistical" ? "active":""}`} onClick={()=>changeNav("statistical")}>Thống kê</Nav>
-                <Nav className={"nav "+`${currentNav === "comments" ? "active":""}`} onClick={()=>changeNav("comments")}>Nhận xét</Nav>
-                <Nav className={"nav "+`${currentNav === "newblog" ? "active":""}`} onClick={()=>changeNav("newblog")}>Thêm Blog</Nav>
+                <Nav className={"nav "+ (location.pathname === "/blog/posts" ? 'active': '')}>
+                    <NavLink className="nav" to="/blog/posts" >Bài đăng</NavLink>
+                </Nav>
+                <Nav className={"nav "+ (location.pathname === "/blog/statistical" ? 'active': '')}>
+                    <NavLink className="nav" to="/blog/statistical">Thống kê</NavLink>
+                </Nav>
+                <Nav className={"nav "+ (location.pathname === "/blog/comments" ? 'active': '')}>
+                    <NavLink className="nav" to="/blog/comments">Nhận xét</NavLink>
+                </Nav>
+                <Nav className={"nav "+ (location.pathname === "/blog/newblog" ? 'active': '')}>
+                    <NavLink className="nav" to="/blog/newblog">Thêm Blog</NavLink>
+                </Nav>
             </NavColums>
             <div className='dashboard'>
-                {content}
+               <Outlet />
             </div>
             {currentNav !== "newblog" && 
             <button className="new-post nav" onClick={()=>changeNav("newblog")}>

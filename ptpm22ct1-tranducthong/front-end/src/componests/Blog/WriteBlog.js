@@ -3,15 +3,17 @@ import { useEffect, useState, memo, useRef, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github.css';
-import { Editor, EditorState,  RichUtils, convertToRaw} from 'draft-js';
+import { Editor, EditorState,  RichUtils, convertFromHTML, ContentState} from 'draft-js';
 import 'draft-js/dist/Draft.css';
-import WriteConfigBtn from './TextEditor';
-import { BlogTypesContext, UseInforContex } from '../../Context/PagesContext';
 import { stateToHTML } from 'draft-js-export-html';
+
+import WriteConfigBtn from './TextEditor';
+import { AuthorContex, BlogTypesContext, UseInforContex } from '../../Context/PagesContext';
 import { MessageContex } from '../../Context/MessageContex';
 
 
 export default function WriteBlog(){
+
 
     const [buttonState, setButtonState] = useState({
         bold_btn : false,
@@ -23,14 +25,15 @@ export default function WriteBlog(){
         overview_btn : false,
     });
    
+    const {setShowPopup} = useContext(MessageContex); 
     const {blogTypes} = useContext(BlogTypesContext);
     const {userInfor} = useContext(UseInforContex);
-
+    const {onEditBlog, setOnEditBlog} = useContext(AuthorContex);
     const [markdown, setMarkDown] = useState('');
     const [code, setCode] = useState('');
-   
-    
     const [title, setTitle] = useState('');
+
+    
     
     const editorRef = useRef(null);
 
@@ -48,8 +51,8 @@ export default function WriteBlog(){
         type_blog : ""
     });
 
+    const [describe, setDescribe] = useState('');
     
-
     const handleEditorChange = (newState) => {
         setEditorState(newState);
         if(buttonState.markdown_btn){
@@ -65,7 +68,6 @@ export default function WriteBlog(){
     };
 
    
-    const {setShowPopup} = useContext(MessageContex); 
     const handleSubmitBlog = async (e) => {
         e.preventDefault();
     
@@ -118,7 +120,7 @@ export default function WriteBlog(){
         }
     
         // Thu thập mô tả và hình ảnh
-        const describe = document.getElementById("blog-describe").value;
+        
         const thumbnail = document.getElementById("imageInput").files[0];
     
         if (!thumbnail) {
@@ -148,6 +150,9 @@ export default function WriteBlog(){
     
         // Sử dụng FormData để gửi dữ liệu
         const formData = new FormData();
+        if(onEditBlog.isEdit){
+            formData.append("id_blog", onEditBlog.id_blog);
+        }
         formData.append("name_blog", title);
         formData.append("content_blog", content_blog);
         select_values.forEach(value => {
@@ -156,10 +161,12 @@ export default function WriteBlog(){
         formData.append("show_type", show_type);
         formData.append("blog_describe", describe);
         formData.append("thumbnail", thumbnail);
-    
+        console.log([...formData]);
+        
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/author/blog/create-new", {
-                method: "POST",
+            const response = await fetch((onEditBlog.isEdit && onEditBlog.editURL )
+                                        || "http://127.0.0.1:8000/api/author/blog/create-new", {
+                method: onEditBlog.isEdit ? "PUT" : "POST",
                 headers: {
                     Authorization: `Bearer ${userInfor.token}`,
                 },
@@ -189,7 +196,38 @@ export default function WriteBlog(){
         }
     };
     
-
+    useEffect(()=>{
+        if(onEditBlog.isEdit){
+            const blog = onEditBlog.blog;
+            setTitle(blog.name_blog);
+            setDescribe(blog.blog_describe);
+            if(blog.show_type == 1){
+                setButtonState(pre => ({
+                    ...pre,
+                    code_btn : true,
+                    markdown_btn : false,
+                }));
+                const contentState = ContentState.createFromText(blog.blog_content);
+                handleEditorChange(EditorState.createWithContent(contentState));
+            }else if (blog.show_type == 2){
+                setButtonState(pre => ({
+                    ...pre,
+                    code_btn : false,
+                    markdown_btn : true,
+                }));
+                const contentState = ContentState.createFromText(blog.blog_content);
+                handleEditorChange(EditorState.createWithContent(contentState));
+            }else{
+                const blocksFromHTML = convertFromHTML(blog.blog_content);
+                const contentState = ContentState.createFromBlockArray(
+                    blocksFromHTML.contentBlocks,
+                    blocksFromHTML.entityMap
+                );
+                handleEditorChange(EditorState.createWithContent(contentState));
+            }
+        }
+    },[]);
+    
     return(<>
         {buttonState.overview_btn && 
             <div id='overview-popup'>
@@ -224,8 +262,10 @@ export default function WriteBlog(){
         </div>
         <textarea 
             id="blog-describe" 
-            placeholder='Blog descariber' 
+            placeholder='Blog describe' 
             className={(errorMessage.describe ? ' error' : '')}
+            onChange={(e)=>setDescribe(e.target.value)}
+            value={describe}
             onClick={errorMessage.describe ? () => setErrorMessage(pre=>({...pre, describe: ""})) : undefined}>
             
         </textarea>
