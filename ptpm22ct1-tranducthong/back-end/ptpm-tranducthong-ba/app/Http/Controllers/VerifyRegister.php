@@ -47,15 +47,12 @@ class VerifyRegister extends Controller
     {   
         $credentials = $request->only('email', 'password');
 
-        // Tìm người dùng theo email
         $user = User::where('email', $credentials['email'])->first();
 
         if(!$user){
             return response()->json(['message' => 'Email không tồn tại'], 401);
         }
-        // Kiểm tra xem người dùng có tồn tại và mật khẩu có khớp không
         if (Hash::check($credentials['password'], $user->password)) {
-            // Tạo token cho người dùng
             $token = $user->createToken($user->name)->plainTextToken;
 
             return response()->json([

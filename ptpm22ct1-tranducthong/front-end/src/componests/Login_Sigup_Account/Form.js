@@ -207,11 +207,8 @@ export function SignUp({isShowForm, tab, setShowPopup, setUserInfor}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessages, setErrorMessages] = useState('');
-    // const [isLogin, showLogin, setShow, changeLoginState] = useLogin('');
-
     const handleSignUp = async (e) => {
         e.preventDefault(); // Ngăn hành vi gửi form mặc định
-
         setShowPopup(prev => ({
             ...prev,
             message: "Processing signup...",
@@ -231,17 +228,12 @@ export function SignUp({isShowForm, tab, setShowPopup, setUserInfor}) {
                     password: password,
                 }),
             });
-
             const data = await response.json();
-
             if (!response.ok) {
-                // Xử lý lỗi nếu response không thành công
                 throw new Error(data.message || 'Đăng ký thất bại');
             }else{
                 setErrorMessages('');
             }
-
-            // Xử lý response nếu đăng ký thành công
             const user_data = data.data;
             setUserInfor({
                 token : data.token,
@@ -251,8 +243,6 @@ export function SignUp({isShowForm, tab, setShowPopup, setUserInfor}) {
                 id_role : user_data.id_role
             });
 
-            console.log('Sign Up successful:', data);
-            console.info(`Token: ${data.token}`);
             let saveData = localSave( "access_token", data.token);
             localSave( "user_data", data.data); 
             setShowPopup(prev => ({
@@ -262,7 +252,6 @@ export function SignUp({isShowForm, tab, setShowPopup, setUserInfor}) {
                 isShow: true,
                 timeOut:2000
             }));  
-            // changeLoginState(saveData);
             isShowForm(!saveData);
         } catch (error) {
             setShowPopup(prev => ({
@@ -272,7 +261,6 @@ export function SignUp({isShowForm, tab, setShowPopup, setUserInfor}) {
                 isShow: true,
                 timeOut:2000
             }));
-            // Xử lý lỗi nếu có
             setErrorMessages(error.message);
             console.error('Error signing up:', error.message);
         }
@@ -335,19 +323,15 @@ export function Login({isShowForm, tab, setShowPopup, setUserInfor}){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessages, setErrorMessages] = useState('');
-    // const [isLogin, showLogin, setShow, changeLoginState] = useLogin('');
 
-    
     const handleLogin = async (e) => {
         e.preventDefault(); 
-        
         setShowPopup(prev => ({
             ...prev,
             message: "Login ...",
             type: "infor",
             isShow: true,
         }));
-        
         try {
             const response = await fetch('http://127.0.0.1:8000/api/login', {
                 method: 'POST',
@@ -359,9 +343,7 @@ export function Login({isShowForm, tab, setShowPopup, setUserInfor}){
                     password: password,
                 }),
             });
-
             const data = await response.json();
-
             if (!response.ok) {
                 setShowPopup(prev => ({
                     ...prev,
@@ -380,9 +362,6 @@ export function Login({isShowForm, tab, setShowPopup, setUserInfor}){
                     timeOut:1000
                 }));
                 setErrorMessages('');
-            
-
-            // Xử lý response nếu đăng ký thành công
                 const user_data = data.data;
                 setUserInfor({
                     token : data.token,
@@ -391,11 +370,8 @@ export function Login({isShowForm, tab, setShowPopup, setUserInfor}){
                     user_email : user_data.email,
                     id_role : user_data.id_role
                 });
-                console.log('Login successful:', data);
-                console.info(`Token: ${data.token}`);
                 let saveData = localSave( "access_token", data.token);
                 localSave( "user_data", data.data);   
-                // changeLoginState(saveData); 
                 isShowForm(!saveData);
             }
         } catch (error) {
@@ -409,7 +385,6 @@ export function Login({isShowForm, tab, setShowPopup, setUserInfor}){
             setErrorMessages(error.message);
             console.error('Error signing up:', error.message);
         }
-        
     };
 
     if(tab != "Login"){

@@ -166,7 +166,7 @@ export default function WriteBlog(){
         try {
             const response = await fetch((onEditBlog.isEdit && onEditBlog.editURL )
                                         || "http://127.0.0.1:8000/api/author/blog/create-new", {
-                method: onEditBlog.isEdit ? "PUT" : "POST",
+                method: "POST",
                 headers: {
                     Authorization: `Bearer ${userInfor.token}`,
                 },
@@ -178,11 +178,20 @@ export default function WriteBlog(){
             if (response.ok) {
                 setShowPopup((prev) => ({
                     ...prev,
-                    message: "Blog created successfully!",
+                    message: "Blog"+(onEditBlog.isEdit ? " edit " : "create ")+"successfully!",
                     isShow: true,
                     type: "done",
                     timeOut: 2000,
                 }));
+                setOnEditBlog( pre => ({
+                    ...pre,
+                    id_blog : '',
+                    blog : {},
+                    isEdit : false,
+                }));
+                setTitle('');
+                setEditorState(EditorState.createEmpty());
+                setDescribe('');
             } else {
                 throw new Error(data.message || "An error occurred.");
             }
@@ -197,6 +206,10 @@ export default function WriteBlog(){
     };
     
     useEffect(()=>{
+        setTitle('');
+        setEditorState(EditorState.createEmpty());
+        setDescribe('');
+        
         if(onEditBlog.isEdit){
             const blog = onEditBlog.blog;
             setTitle(blog.name_blog);
@@ -225,6 +238,13 @@ export default function WriteBlog(){
                 );
                 handleEditorChange(EditorState.createWithContent(contentState));
             }
+
+            setOnEditBlog( pre => ({
+                ...pre,
+                id_blog : '',
+                blog : {},
+                isEdit : false,
+            }));
         }
     },[]);
     

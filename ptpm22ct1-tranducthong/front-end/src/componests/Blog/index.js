@@ -28,12 +28,12 @@ function Blog({blog_title, blog_types, day_create, blog_view, comments, id_blog,
     const navigate = useNavigate();
 
    const editBlog = (id_blog, blog)=>{
-        // setOnEditBlog(pre => ({
-        //     ...pre,
-        //     id_blog : id_blog,
-        //     blog : blog,
-        //     isEdit : true
-        // }));
+        setOnEditBlog(pre => ({
+            ...pre,
+            id_blog : id_blog,
+            blog : blog,
+            isEdit : true
+        }));
         navigate('/blog/newblog');
    }
 

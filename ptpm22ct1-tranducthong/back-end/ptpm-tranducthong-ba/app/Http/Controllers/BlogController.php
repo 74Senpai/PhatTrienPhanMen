@@ -126,7 +126,6 @@ class BlogController extends Controller
                 return response()->json(['error' => 'Author not found'], 404);
             }
 
-            // Tạo blog
             $blog = Blog::create([
                 'name_blog'     => $request->name_blog,
                 'id_author'     => $author->id_author,
@@ -137,13 +136,12 @@ class BlogController extends Controller
                 'show_type'     => $request->show_type
             ]);
 
-            // Tạo danh sách loại blog
             $createListBlogByType = $this->createListBlogByType($blog->id_blog, $request->type_blog);
             if (!$createListBlogByType) {
                 return response()->json(['error' => 'Failed to create ListBlogByType'], 500);
             }
 
-            DB::commit();  // Commit giao dịch nếu không có lỗi
+            DB::commit(); 
             event( new AppNotification('Tác giả "'.$author->name_author.' " vừa đăng 1 bài viết mới'));
             return response()->json(['message' => 'Blog created successfully'], 201);
 
@@ -202,10 +200,27 @@ class BlogController extends Controller
    
 
     public function updateBlog(Request $request){
-        $user = $request->user();
-        if($user->id_role == config('roles.admin') || $user->id_role == config('roles.author')){
-            $validate = Validator::make($request->all(), [
-                'id_blog'       => 'int|required',
+        $blog = Blog::find($request->id_blog);
+        if($blog == null){
+            return response()->json([ 'error' => 'Not found id '.$request->name_blog], 404);
+        }
+        
+        if($blog->name_blog !== $request->name_blog){
+            $validator = Validator::make($request->all(), [
+                'name_blog'     => 'required|string|max:255|unique:blogs',
+                'content_blog'  => 'required|string',
+                'type_blog'     => 'required|array',
+                'type_blog.*'   => 'int',
+                'blog_describe' => 'required|string|max:255',
+                'thumbnail'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'show_type'     => 'required|int'
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 422);
+            }
+        }else{
+            $validator = Validator::make($request->all(), [
                 'name_blog'     => 'required|string|max:255',
                 'content_blog'  => 'required|string',
                 'type_blog'     => 'required|array',
@@ -214,21 +229,21 @@ class BlogController extends Controller
                 'thumbnail'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'show_type'     => 'required|int'
             ]);
-
-            if($validate->fails()){
-                return response()->json([
-                    'error'     => 'Data not validity',
-                    'message'   => $validate->errors()->all()
-                ],400);
+    
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 422);
             }
+        }
+        
+
+        $user = $request->user();
+        if($user->id_role == config('roles.admin') || $user->id_role == config('roles.author')){
+            
+           
             
             DB::beginTransaction();
             try{
-                $blog = Blog::find($request->id_blog);
-                if($blog == null){
-                    DB::rollBack();
-                    return response()->json([ 'error' => 'Not found'], 404);
-                }
+                
 
                 if($user->id_role == config('roles.author')){
                     $author = Author::find($blog->id_author);

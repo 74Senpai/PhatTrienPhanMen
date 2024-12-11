@@ -162,8 +162,8 @@ export const AuthorProvider = ({children})=>{
   const [onEditBlog, setOnEditBlog] = useState({
     id_blog : '',
     blog : {},
-    editURL : 'http://127.0.0.1:8000/api/author/blog/update',
     isEdit : false,
+    editURL : 'http://127.0.0.1:8000/api/author/blog/update',
   });
   const [action, setAction] = useState({
     action : "none",

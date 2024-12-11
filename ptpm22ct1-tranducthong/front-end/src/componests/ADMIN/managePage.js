@@ -22,7 +22,6 @@ function ManageBlogPage(){
             isShow: true,
             type: "infor"
         }));
-
         try {
             const response = await fetch('http://127.0.0.1:8000/api/admin/blog-type/create', {
                 method: 'POST',
@@ -36,11 +35,8 @@ function ManageBlogPage(){
                     describe: describe
                 }),
             });
-
             const data = await response.json();
-
             if (!response.ok) {
-               
                
             }else{
                 setTimeout(setShowPopup(pre=>({
@@ -53,10 +49,7 @@ function ManageBlogPage(){
                 const typeBlogs = await results.json();
                 setBlogTypes(typeBlogs.data);
             }
-
-            
         } catch (error) {
-           
         }
     };
 
